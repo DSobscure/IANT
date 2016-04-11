@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IANTLibrary;
 using Photon.SocketServer;
 using PhotonHostRuntimeInterfaces;
-using ExitGames.Logging;
-using IANTLibrary;
+using System;
 
 namespace IANTServer
 {
-    public class Peer : PeerBase
+    public class Peer : ClientPeer
     {
-        public Guid guid { get; }
+        public Guid Guid { get; }
         protected Player player;
         public int PlayerUniqueID
         {
@@ -24,25 +19,28 @@ namespace IANTServer
                     return player.UniqueID;
             }
         }
+        protected OperationManager operationManager;
 
-        public Peer(IRpcProtocol rpcprotocol, IPhotonPeer nativePeer) : base(rpcprotocol,nativePeer)
+        public Peer(InitRequest initRequest) : base(initRequest)
         {
-            guid = Guid.NewGuid();
-            if(Application.Instance.EstablishConnection(this))
+            Guid = Guid.NewGuid();
+            operationManager = new OperationManager(this);
+            if (Application.ServerInstance.EstablishConnection(this))
             {
-                Application.Log.Info(string.Format("establish new connection guid:{0}", guid));
+                Application.Log.Info(string.Format("establish new connection guid:{0}", Guid));
             }
             else
             {
-                Application.Log.Info(string.Format("establish connection fail guid:{0}", guid));
+                Application.Log.Info(string.Format("establish connection fail guid:{0}", Guid));
             }
+            
         }
 
         protected override void OnDisconnect(DisconnectReason reasonCode, string reasonDetail)
         {
             if(player != null)
             {
-                if (Application.Instance.PlayerOffline(player))
+                if (Application.ServerInstance.PlayerOffline(player))
                 {
                     Application.Log.Info(string.Format("player offline uniqueID:{0}", player.UniqueID));
                 }
@@ -51,19 +49,19 @@ namespace IANTServer
                     Application.Log.Info(string.Format("player offline fail uniqueID:{0}", player.UniqueID));
                 }
             }
-            if(Application.Instance.TerminateConnection(this))
+            if(Application.ServerInstance.TerminateConnection(this))
             {
-                Application.Log.Info(string.Format("terminate connection guid:{0}", guid));
+                Application.Log.Info(string.Format("terminate connection guid:{0}", Guid));
             }
             else
             {
-                Application.Log.Info(string.Format("terminate connection fail guid:{0}", guid));
+                Application.Log.Info(string.Format("terminate connection fail guid:{0}", Guid));
             }
         }
 
         protected override void OnOperationRequest(OperationRequest operationRequest, SendParameters sendParameters)
         {
-            throw new NotImplementedException();
+            operationManager.Operate(operationRequest);
         }
     }
 }

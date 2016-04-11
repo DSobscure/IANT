@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Photon.SocketServer;
-using ExitGames.Logging;
+﻿using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
-using log4net.Config;
 using IANTLibrary;
+using log4net.Config;
+using Photon.SocketServer;
 using System.IO;
 
 namespace IANTServer
@@ -15,7 +10,7 @@ namespace IANTServer
     public class Application : ApplicationBase
     {
         private static Application instance;
-        public static Application Instance
+        public static Application ServerInstance
         {
             get
             {
@@ -29,11 +24,12 @@ namespace IANTServer
 
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
-            return new Peer(initRequest.Protocol, initRequest.PhotonPeer);
+            return new Peer(initRequest);
         }
 
         protected override void Setup()
         {
+            instance = this;
             log4net.GlobalContext.Properties["Photon:ApplicationLogPath"] =
                 Path.Combine(this.ApplicationPath, "log");
 

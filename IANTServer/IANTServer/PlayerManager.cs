@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IANTLibrary;
 
 namespace IANTServer
@@ -22,21 +20,21 @@ namespace IANTServer
 
         public bool RegisterConnection(Peer peer)
         {
-            if (connections.ContainsKey(peer.guid))
+            if (connections.ContainsKey(peer.Guid))
             {
                 return false;
             }
             else
             {
-                connections.Add(peer.guid, peer);
+                connections.Add(peer.Guid, peer);
                 return true;
             }
         }
         public bool EraseConnection(Peer peer)
         {
-            if (connections.ContainsKey(peer.guid))
+            if (connections.ContainsKey(peer.Guid))
             {
-                return connections.Remove(peer.guid);
+                return connections.Remove(peer.Guid);
             }
             else
             {
