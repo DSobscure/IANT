@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IANTServer", "IANTServer\IANTServer.csproj", "{04BE5112-089B-4197-8FE8-C5CF42A7EAC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IANTLibrary", "IANTLibrary\IANTLibrary.csproj", "{647E5286-1E3C-40F3-A4A3-57A42A96DC0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IANTProtocol", "IANTProtocol\IANTProtocol.csproj", "{05985406-AB6D-43FF-884D-006FE127EFC0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04BE5112-089B-4197-8FE8-C5CF42A7EAC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04BE5112-089B-4197-8FE8-C5CF42A7EAC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04BE5112-089B-4197-8FE8-C5CF42A7EAC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04BE5112-089B-4197-8FE8-C5CF42A7EAC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{647E5286-1E3C-40F3-A4A3-57A42A96DC0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{647E5286-1E3C-40F3-A4A3-57A42A96DC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{647E5286-1E3C-40F3-A4A3-57A42A96DC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{647E5286-1E3C-40F3-A4A3-57A42A96DC0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05985406-AB6D-43FF-884D-006FE127EFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05985406-AB6D-43FF-884D-006FE127EFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05985406-AB6D-43FF-884D-006FE127EFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05985406-AB6D-43FF-884D-006FE127EFC0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

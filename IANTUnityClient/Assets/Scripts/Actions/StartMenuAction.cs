@@ -36,7 +36,7 @@ public class StartMenuAction : MonoBehaviour {
             if (FB.IsLoggedIn)
             {
                 startMenuUI.resultText.text = "login successiful\n";
-                startMenuUI.resultText.text = result.RawResult;
+                IANTGame.ActionManager.AuthenticateActionManager.Login(result.AccessToken.UserId, result.AccessToken.TokenString);
             }
         };
         startMenuUI.resultText.text = "waiting for login response\n";
