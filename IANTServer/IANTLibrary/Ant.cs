@@ -7,18 +7,20 @@ namespace IANTLibrary
 {
     public struct AntProperties
     {
+        public int level;
         public Food food;
         public int hp;
         public int maxHP;
         public float positionX;
         public float positionY;
     }
-    public class Ant
+    public abstract class Ant
     {
         protected AntProperties properties;
         public bool IsTakingFood { get { return properties.food != null; } }
         static int AntCounter = 0;
         public int ID { get; protected set; }
+        public int Level { get { return properties.level; } protected set { properties.level = value; } }
         public int HP
         {
             get
@@ -28,18 +30,20 @@ namespace IANTLibrary
             protected set
             {
                 properties.hp = value;
-                if(properties.hp <= 0)
+                OnHPChange?.Invoke(properties.hp);
+                if (properties.hp <= 0)
                 {
                     OnAntDead?.Invoke();
                 }
             }
         }
         public int MaxHP { get { return properties.maxHP; } }
-        public float PositionX { get { return properties.positionX; } }
-        public float PositionY { get { return properties.positionY; } }
+        public float PositionX { get { return properties.positionX; } protected set { properties.positionX = value; } }
+        public float PositionY { get { return properties.positionY; } protected set { properties.positionY = value; } }
 
         public Action OnAntDead;
         public Action OnFoodChanged;
+        public Action<int> OnHPChange;
 
         public Ant(AntProperties properties)
         {
@@ -59,22 +63,25 @@ namespace IANTLibrary
             properties.food = null;
             OnFoodChanged?.Invoke();
         }
-        public virtual Ant Duplicate()
-        {
-            return new Ant(properties);
-        }
+        public abstract Ant Duplicate();
         public void UpdatePosition(float x, float y)
         {
-            properties.positionX = x;
-            properties.positionY = y;
+            PositionX = x;
+            PositionY = y;
         }
         public void Hit(int damage)
         {
-            properties.hp -= damage;
+            HP -= damage;
         }
         public virtual void Move()
         {
 
+        }
+        public void LevelUp()
+        {
+            Level += 1;
+            properties.maxHP += 5;
+            properties.hp = properties.maxHP;
         }
     }
 }

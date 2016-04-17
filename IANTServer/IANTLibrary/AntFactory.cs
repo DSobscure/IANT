@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IANTLibrary
 {
-    public class AntFactory
+    public abstract class AntFactory
     {
         protected Dictionary<int, Ant> antDictionary;
         protected Ant antPrefab;
@@ -13,27 +13,30 @@ namespace IANTLibrary
         protected float nestPositionX;
         protected float nestPositionY;
 
-        public AntFactory(float nestPositionX, float nestPositionY)
+        public AntFactory(float nestPositionX, float nestPositionY, Ant antPrefab)
         {
             this.nestPositionX = nestPositionX;
             this.nestPositionY = nestPositionY;
             antDictionary = new Dictionary<int, Ant>();
-            antPrefab = new Ant(new AntProperties()
-            {
-                positionX = nestPositionX,
-                positionY = nestPositionY,
-                food = null,
-                hp = 3,
-                maxHP = 3
-            });
+            this.antPrefab = antPrefab.Duplicate();
         }
 
         public virtual Ant InstantiateNewAnt()
         {
             totalAntCount++;
+            if(totalAntCount%6 == 0)
+            {
+                antPrefab.LevelUp();
+            }
             Ant ant = antPrefab.Duplicate();
+            ant.UpdatePosition(nestPositionX, nestPositionY);
             antDictionary.Add(ant.ID, ant);
             return ant;
+        }
+
+        public virtual void NotifyAntDead(Ant ant)
+        {
+            antDictionary.Remove(ant.ID);
         }
     }
 }

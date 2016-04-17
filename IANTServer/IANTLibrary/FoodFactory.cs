@@ -5,19 +5,23 @@ using System.Text;
 
 namespace IANTLibrary
 {
-    public class FoodFactory
+    public abstract class FoodFactory
     {
         protected List<Food> foodList;
         protected List<Food> storedFoodList;
         public int RemainedFoodCount { get { return storedFoodList.Count; } }
         public int TotalFoodCount { get { return foodList.Count; } }
+        public float FoodPlatePositionX { get; protected set; }
+        public float FoodPlatePositionY { get; protected set; }
 
         public event Action<int> OnRemainedFoodCountChange;
 
-        public FoodFactory()
+        public FoodFactory(float foodPlatePositionX, float foodPlatePositionY)
         {
             foodList = new List<Food>();
             storedFoodList = new List<Food>();
+            FoodPlatePositionX = foodPlatePositionX;
+            FoodPlatePositionY = foodPlatePositionY;
         }
 
         public void FillFood(Food food, int count)
@@ -46,8 +50,11 @@ namespace IANTLibrary
         }
         public void ReplaceFood(Food food)
         {
-            storedFoodList.Add(food);
-            OnRemainedFoodCountChange?.Invoke(RemainedFoodCount);
+            if(food != null)
+            {
+                storedFoodList.Add(food);
+                OnRemainedFoodCountChange?.Invoke(RemainedFoodCount);
+            }
         }
     }
 }

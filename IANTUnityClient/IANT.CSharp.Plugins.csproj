@@ -75,11 +75,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Plugins\IANT\AntController.cs" />
-    <Compile Include="Assets\Plugins\IANT\AntManager.cs" />
-    <Compile Include="Assets\Plugins\IANT\ClientAnt.cs" />
-    <Compile Include="Assets\Plugins\IANT\ClientAntFactory.cs" />
-    <Compile Include="Assets\Plugins\IANT\ClientGame.cs" />
+    <Compile Include="Assets\Plugins\IANT\Controllers\AntController.cs" />
+    <Compile Include="Assets\Plugins\IANT\Controllers\BulletController.cs" />
+    <Compile Include="Assets\Plugins\IANT\Controllers\TowerController.cs" />
+    <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientAnt.cs" />
+    <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientAntFactory.cs" />
+    <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientFoodFactory.cs" />
+    <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientGame.cs" />
+    <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientTower.cs" />
+    <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientTowerFactory.cs" />
+    <Compile Include="Assets\Plugins\IANT\Managers\AntManager.cs" />
+    <Compile Include="Assets\Plugins\IANT\Managers\GameManager.cs" />
+    <Compile Include="Assets\Plugins\IANT\Managers\TowerManager.cs" />
+    <Compile Include="Assets\Plugins\IANT\SpriteText.cs" />
     <Compile Include="Assets\Plugins\IANTGame.cs" />
     <Compile Include="Assets\Plugins\Interface\IController.cs" />
     <Compile Include="Assets\Plugins\Interface\IInformHandler.cs" />
