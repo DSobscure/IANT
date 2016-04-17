@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using IANTLibrary;
 
 public class BuildTowerController : MonoBehaviour
 {
@@ -24,10 +25,13 @@ public class BuildTowerController : MonoBehaviour
     }
     public void BuildTower()
     {
+        Tower tower;
+        string errorMessage;
+
         isSelectingPosition = false;
-        GameObject tower = Instantiate(towerPrefab);
-        tower.transform.position = new Vector3(towerBlock.localPosition.x, towerBlock.localPosition.y, 3);
+        IANTGame.Game.TowerFactory.BuildTower(towerBlock.localPosition.x, towerBlock.localPosition.y, IANTGame.Game, out tower, out errorMessage);
         Destroy(towerBlock.gameObject);
+        Debug.Log(errorMessage);
     }
 
     void Update()
