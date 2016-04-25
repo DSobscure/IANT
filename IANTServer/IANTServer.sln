@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IANTServer", "IANTServer\IANTServer.csproj", "{04BE5112-089B-4197-8FE8-C5CF42A7EAC2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{05985406-AB6D-43FF-884D-006FE127EFC0} = {05985406-AB6D-43FF-884D-006FE127EFC0}
+		{647E5286-1E3C-40F3-A4A3-57A42A96DC0C} = {647E5286-1E3C-40F3-A4A3-57A42A96DC0C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IANTLibrary", "IANTLibrary\IANTLibrary.csproj", "{647E5286-1E3C-40F3-A4A3-57A42A96DC0C}"
 EndProject
