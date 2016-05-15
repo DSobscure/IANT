@@ -13,6 +13,8 @@ namespace IANTLibrary
         public int maxHP;
         public float positionX;
         public float positionY;
+        public float rotation;
+        public float velocity;
     }
     public abstract class Ant
     {
@@ -40,6 +42,8 @@ namespace IANTLibrary
         public int MaxHP { get { return properties.maxHP; } }
         public float PositionX { get { return properties.positionX; } protected set { properties.positionX = value; } }
         public float PositionY { get { return properties.positionY; } protected set { properties.positionY = value; } }
+        public float Rotation { get { return properties.rotation; } protected set { properties.rotation = value; } }
+        public float Speed { get { return properties.velocity; } protected set { properties.velocity = value; } }
 
         public Action OnAntDead;
         public Action OnFoodChanged;
@@ -69,7 +73,7 @@ namespace IANTLibrary
             PositionX = x;
             PositionY = y;
         }
-        public void Hit(int damage)
+        public void Hurt(int damage)
         {
             HP -= damage;
         }

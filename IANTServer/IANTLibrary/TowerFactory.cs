@@ -63,7 +63,8 @@ namespace IANTLibrary
             if(towerDictionary.ContainsKey(tower.UniqueID))
             {
                 towerDictionary.Remove(tower.UniqueID);
-                game.Money += tower.DestroyReturn;
+                game.Money += tower.DegradeReturn;
+                NextTowerCost -= 10;
                 return true;
             }
             else

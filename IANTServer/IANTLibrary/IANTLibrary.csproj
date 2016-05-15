@@ -41,15 +41,25 @@
   <ItemGroup>
     <Compile Include="Ant.cs" />
     <Compile Include="AntFactory.cs" />
+    <Compile Include="Bullet.cs" />
+    <Compile Include="Bullets\FireBullet.cs" />
+    <Compile Include="Bullets\IceBullet.cs" />
+    <Compile Include="Bullets\ThunderBullet.cs" />
     <Compile Include="Cake.cs" />
+    <Compile Include="ElelmentType.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="FoodFactory.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="Nest.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tower.cs" />
     <Compile Include="TowerFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
