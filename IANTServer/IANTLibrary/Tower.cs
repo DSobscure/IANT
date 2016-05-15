@@ -10,7 +10,15 @@ namespace IANTLibrary
         public float positionX;
         public float positionY;
         public int upgradeCost;
-        public int destroyReturn;
+        public int degradeReturn;
+        public float range;
+        public float frequency;
+        public float speed;
+        public int bulletNumber;
+        public float bulletSpanRange;
+        public int damage;
+        public ElelmentType elementType;
+        public Bullet bulletPrefab;
     }
     public abstract class Tower
     {
@@ -20,7 +28,15 @@ namespace IANTLibrary
         public float PositionX { get { return properties.positionX; } protected set { properties.positionX = value; } }
         public float PositionY { get { return properties.positionY; } protected set { properties.positionY = value; } }
         public int UpgradeCost { get { return properties.upgradeCost; } protected set { properties.upgradeCost = value; } }
-        public int DestroyReturn { get { return properties.destroyReturn; } protected set { properties.destroyReturn = value; } }
+        public int DegradeReturn { get { return properties.degradeReturn; } protected set { properties.degradeReturn = value; } }
+        public float Range { get { return properties.range; } protected set { properties.range = value; } }
+        public float Frequency { get { return properties.frequency; } protected set { properties.frequency = value; } }
+        public float Speed { get { return properties.speed; } protected set { properties.speed = value; } }
+        public int BulletNumber { get { return properties.bulletNumber; } protected set { properties.bulletNumber = value; } }
+        public float BulletSpanRange { get { return properties.bulletSpanRange; } protected set { properties.bulletSpanRange = value; } }
+        public int Damage { get { return properties.damage; } protected set { properties.damage = value; } }
+        public ElelmentType ElementType { get { return properties.elementType; } protected set { properties.elementType = value; } }
+        public Bullet BulletPrefab { get { return properties.bulletPrefab; } protected set { properties.bulletPrefab = value; } }
         public Ant TargetAimed { get; protected set; }
         protected List<Ant> targetsInRange;
         public bool InReloading { get; set; }
@@ -62,16 +78,18 @@ namespace IANTLibrary
                 TargetAimed = null;
             }
         }
-        public virtual bool Fire()
+        public virtual bool Fire(out Bullet bullet)
         {
             if(TargetAimed.HP > 0 && !InReloading)
             {
                 InReloading = true;
+                bullet = BulletPrefab.Duplicate();
                 return true;
             }
             else
             {
                 TargetAimed = null;
+                bullet = null;
                 return false;
             }
         }
