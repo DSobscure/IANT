@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System;
 using IANTLibrary;
 
 public class ClientAnt : Ant
 {
     private GameObject antInstance;
     private AntController antController;
-    public ClientAnt(AntProperties properties) : base(properties)
+    public ClientAnt(AntProperties properties, Nest nest) : base(properties, nest)
     {
     }
     public void BindInstance(GameObject instance)
@@ -14,15 +14,16 @@ public class ClientAnt : Ant
         antInstance = instance;
         antController = instance.GetComponent<AntController>();
         antController.ant = this;
+        antController.RegisterEvents();
     }
     public override Ant Duplicate()
     {
-        return new ClientAnt(properties);
+        return new ClientAnt(properties, nest);
     }
     public override void Move()
     {
-        antController.Move();
-        properties.positionX = antInstance.transform.position.x;
-        properties.positionY = antInstance.transform.position.y;
+        UpdatePosition(antInstance.transform.position.x, antInstance.transform.position.y);
+        base.Move();
+        antController.SetVelocity();
     }
 }

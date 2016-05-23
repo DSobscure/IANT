@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using UnityEngine.UI;
 using IANTLibrary;
+using UnityEngine;
 
 public class ClientTowerFactory : TowerFactory
 {
     private TowerManager towerManager;
 
-    public ClientTowerFactory(Tower towerPrefab, float leastTowerSpan) : base(towerPrefab, leastTowerSpan)
+    public ClientTowerFactory(Tower towerPrefab, float leastTowerSpan, Game game) : base(towerPrefab, leastTowerSpan, game)
     {
 
     }
@@ -20,7 +20,9 @@ public class ClientTowerFactory : TowerFactory
         if (base.BuildTower(positionX, positionY, game, out tower, out errorMessage))
         {
             ClientTower targetTower = tower as ClientTower;
-            targetTower.BindInstance(towerManager.InstantiateNewTower(positionX, positionY));
+            Button button;
+            targetTower.BindInstance(towerManager.InstantiateNewTower(positionX, positionY, out button), button);
+            button.onClick.AddListener(() => (IANTGame.Game.TowerFactory as ClientTowerFactory).towerManager.SelectTower(targetTower));
             return true;
         }
         else

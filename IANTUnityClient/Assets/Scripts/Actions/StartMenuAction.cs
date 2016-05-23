@@ -23,6 +23,10 @@ public class StartMenuAction : MonoBehaviour {
                 startMenuUI.resultText.text = "initial successiful waiting for login\n";
                 LoginWithFacbook();
             }
+            else
+            {
+                startMenuUI.resultText.text = "facebook 初始化失敗";
+            }
         };
         startMenuUI.resultText.text = "waiting for initial response\n";
         FB.Init(onInitialComplete);

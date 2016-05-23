@@ -13,4 +13,5 @@ public static class IANTGame
     public static readonly string WebSocketPort = "19090";
 
     public static Game Game;
+    public static Player Player;
 }

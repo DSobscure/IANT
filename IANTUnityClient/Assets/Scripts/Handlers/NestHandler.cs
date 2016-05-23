@@ -8,8 +8,8 @@ public class NestHandler : MonoBehaviour
         if (other.tag == "Ant")
         {
             Ant ant = other.GetComponent<AntController>().ant;
-            if(ant.IsTakingFood)
-                ant.ReleaseFood(IANTGame.Game.FoodFactory);
+            if (ant.IsTakingFood)
+                ant.PutFood(IANTGame.Game.FoodFactory);
         }
     }
 }
