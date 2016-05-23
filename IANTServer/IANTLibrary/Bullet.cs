@@ -26,15 +26,12 @@ namespace IANTLibrary
         public bool IsPenetrable { get { return properties.isPenetrable; } protected set { properties.isPenetrable = value; } }
         public ElelmentType ElementTyple { get { return properties.elementType; } protected set { properties.elementType = value; } }
         public int Damage { get { return properties.damage; } protected set { properties.damage = value; } }
+        public Tower Tower { get; protected set; }
 
-        public Bullet(BulletProperties properties)
+        public Bullet(BulletProperties properties, Tower tower)
         {
             this.properties = properties;
-        }
-
-        public virtual Bullet Duplicate()
-        {
-            return new Bullet(properties);
+            Tower = tower;
         }
 
         public virtual void Hit(Ant ant)

@@ -7,22 +7,21 @@ namespace IANTLibrary.Bullets
 {
     public class IceBullet : Bullet
     {
-        public float SlowDownRate { get; protected set; }
+        public int ElementLevel { get; protected set; }
+        public float SlowDownRatio { get; protected set; }
         public float EffectDuration { get; protected set; }
 
-        public IceBullet(BulletProperties properties, float slowDownRate, float effectDuration) : base(properties)
+        public IceBullet(BulletProperties properties, Tower tower, int elementLevel) : base(properties, tower)
         {
-            SlowDownRate = slowDownRate;
-            EffectDuration = effectDuration;
+            ElementLevel = elementLevel;
+            SlowDownRatio = elementLevel * 2;
+            EffectDuration = elementLevel / 3f;
         }
 
-        public override Bullet Duplicate()
-        {
-            return new IceBullet(properties, SlowDownRate, EffectDuration);
-        }
         public override void Hit(Ant ant)
         {
             base.Hit(ant);
+            ant.IceEffect(this);
         }
     }
 }

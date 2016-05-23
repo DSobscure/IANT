@@ -7,32 +7,33 @@ namespace IANTLibrary
 {
     public abstract class TowerFactory
     {
+        protected Game game;
         protected Tower towerPerfab;
         protected float leastTowerSpan;
         protected Dictionary<int, Tower> towerDictionary;
-        private int nextTowerCost;
         public int NextTowerCost
         {
-            get { return nextTowerCost; }
-            protected set
+            get
             {
-                nextTowerCost = value;
-                OnBuildTowerCostChange?.Invoke(nextTowerCost);
+                return (int)(100 + 50 * Math.Pow(towerDictionary.Count, 1.6));
             }
         }
 
         public event Action<int> OnBuildTowerCostChange;
 
-        public TowerFactory(Tower towerPerfab, float leastTowerSpan)
+        public TowerFactory(Tower towerPerfab, float leastTowerSpan, Game game)
         {
             this.towerPerfab = towerPerfab;
             this.leastTowerSpan = leastTowerSpan;
+            this.game = game;
             towerDictionary = new Dictionary<int, Tower>();
-            NextTowerCost = 20;
         }
         public bool IsPositionLegal(float x, float y)
         {
-            return !towerDictionary.Values.Any(tower => tower.DistanceFrom(x,y) < leastTowerSpan);
+            bool towerBetweenLegal = !towerDictionary.Values.Any(tower => tower.DistanceFrom(x, y) < leastTowerSpan);
+            bool foodPlateLegal = Math.Sqrt(Math.Pow(x - game.FoodPlatePositionX, 2) + Math.Pow(y - game.FoodPlatePositionY, 2)) > game.FoodPlateRadius + 40f;
+            bool nestLegal = Math.Sqrt(Math.Pow(x - game.NestPositionX, 2) + Math.Pow(y - game.NestPositionY, 2)) > game.NestRadius + 40f;
+            return towerBetweenLegal && foodPlateLegal && nestLegal;
         }
         public virtual bool BuildTower(float positionX, float positionY, Game game, out Tower tower, out string errorMessage)
         {
@@ -40,12 +41,12 @@ namespace IANTLibrary
             errorMessage = "";
             if(!IsPositionLegal(positionX, positionY))
             {
-                errorMessage = "position is too close to other towers!";
+                errorMessage = "塔與塔之間的距離太近了!";
                 return false;
             }
             else if(game.Money < NextTowerCost)
             {
-                errorMessage = "not enough money!";
+                errorMessage = "金錢不足!";
                 return false;
             }
             else
@@ -54,7 +55,7 @@ namespace IANTLibrary
                 tower.Locate(positionX, positionY);
                 game.Money -= NextTowerCost;
                 towerDictionary.Add(tower.UniqueID, tower);
-                NextTowerCost += 10;
+                OnBuildTowerCostChange?.Invoke(NextTowerCost);
                 return true; ;
             }
         }
@@ -63,8 +64,8 @@ namespace IANTLibrary
             if(towerDictionary.ContainsKey(tower.UniqueID))
             {
                 towerDictionary.Remove(tower.UniqueID);
-                game.Money += tower.DegradeReturn;
-                NextTowerCost -= 10;
+                game.Money += tower.DestroyReturn;
+                OnBuildTowerCostChange?.Invoke(NextTowerCost);
                 return true;
             }
             else

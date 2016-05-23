@@ -5,23 +5,23 @@ using System.Text;
 
 namespace IANTLibrary.Bullets
 {
-    public class ThunderBullet : Bullet
+    public class PoisonBullet : Bullet
     {
         public int ElementLevel { get; protected set; }
-        public double ParalysisProbability { get; protected set; }
+        public float Poison { get; protected set; }
         public float EffectDuration { get; protected set; }
 
-        public ThunderBullet(BulletProperties properties, Tower tower, int elementLevel) : base(properties, tower)
+        public PoisonBullet(BulletProperties properties, Tower tower, int elementLevel) : base(properties, tower)
         {
             ElementLevel = elementLevel;
-            ParalysisProbability = Math.Pow(0.1, 1 / (double)elementLevel);
-            EffectDuration = elementLevel * 0.05f;
+            Poison = elementLevel;
+            EffectDuration = elementLevel * 2;
         }
 
         public override void Hit(Ant ant)
         {
             base.Hit(ant);
-            ant.ThunderEffect(this);
+            ant.PoisonEffect(this);
         }
     }
 }

@@ -5,7 +5,7 @@ using IANTLibrary;
 public class ClientAntFactory : AntFactory
 {
     private AntManager antManager;
-    public ClientAntFactory(float nestPositionX, float nestPositionY, Ant antPrefab) : base(nestPositionX, nestPositionY, antPrefab)
+    public ClientAntFactory(Ant antPrefab, Game game) : base(antPrefab, game)
     {
         
     }
@@ -16,13 +16,7 @@ public class ClientAntFactory : AntFactory
     public override Ant InstantiateNewAnt()
     {
         ClientAnt ant = base.InstantiateNewAnt() as ClientAnt;
-        Debug.Log(ant == null);
-        ant.BindInstance(antManager.InstantiateNewAnt(ant.PositionX, ant.PositionY));
+        ant.BindInstance(antManager.InstantiateNewAnt(ant.PositionX, ant.PositionY, ant.Rotation));
         return ant;
-    }
-    public override void NotifyAntDead(Ant ant)
-    {
-        base.NotifyAntDead(ant);
-        InstantiateNewAnt();
     }
 }

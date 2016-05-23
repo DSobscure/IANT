@@ -29,9 +29,19 @@ public class BuildTowerController : MonoBehaviour
         string errorMessage;
 
         isSelectingPosition = false;
-        IANTGame.Game.TowerFactory.BuildTower(towerBlock.localPosition.x, towerBlock.localPosition.y, IANTGame.Game, out tower, out errorMessage);
+        if(IANTGame.Game.TowerFactory.BuildTower(towerBlock.localPosition.x, towerBlock.localPosition.y, IANTGame.Game, out tower, out errorMessage))
+        {
+            RectTransform towerButton = (tower as ClientTower).TowerButton.GetComponent<RectTransform>();
+            towerButton.transform.SetParent(panel);
+            towerButton.localScale = Vector3.one;
+            towerButton.localPosition = towerBlock.localPosition;
+        }
+        else
+        {
+            Debug.Log(errorMessage);
+            IANTGame.InformManager.SystemInformManager.CallAlert(errorMessage);
+        }
         Destroy(towerBlock.gameObject);
-        Debug.Log(errorMessage);
     }
 
     void Update()

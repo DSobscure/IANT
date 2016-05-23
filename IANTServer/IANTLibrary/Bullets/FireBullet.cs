@@ -7,22 +7,21 @@ namespace IANTLibrary.Bullets
 {
     public class FireBullet : Bullet
     {
-        public float DamagePerSecond { get; protected set; }
+        public int ElementLevel { get; protected set; }
+        public float SpeedUp { get; protected set; }
         public float EffectDuration { get; protected set; }
 
-        public FireBullet(BulletProperties properties, float damagePerSecond, float effectDuration) : base(properties)
+        public FireBullet(BulletProperties properties, Tower tower, int elementLevel) : base(properties, tower)
         {
-            DamagePerSecond = damagePerSecond;
-            EffectDuration = effectDuration;
+            ElementLevel = elementLevel;
+            SpeedUp = elementLevel * 0.1f;
+            EffectDuration = 1;
         }
 
-        public override Bullet Duplicate()
-        {
-            return new IceBullet(properties, DamagePerSecond, EffectDuration);
-        }
         public override void Hit(Ant ant)
         {
             base.Hit(ant);
+            ant.FireEffect(this);
         }
     }
 }

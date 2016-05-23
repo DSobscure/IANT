@@ -20,7 +20,7 @@ public class DebugReturn : MonoBehaviour, IInformHandler
 
     private void OnDebugReturn(string message)
     {
-        debugText.text += message + " |=| ";
+        //debugText.text += message + " |=| ";
         Debug.Log(message);
     }
 
