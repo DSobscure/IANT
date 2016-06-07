@@ -28,6 +28,7 @@ namespace IANTLibrary
         public int UniqueID { get; }
         public string Name { get { return properties.name + Level.ToString(); } protected set { properties.name = value; } }
         public int Level { get { return properties.level; } protected set { properties.level = value; } }
+        public int ElementLevel { get { return (Level - 1) / 3; } }
         public float PositionX { get { return properties.positionX; } protected set { properties.positionX = value; } }
         public float PositionY { get { return properties.positionY; } protected set { properties.positionY = value; } }
         public int UpgradeCost { get { return properties.upgradeCost; } protected set { properties.upgradeCost = value; } }
@@ -114,22 +115,21 @@ namespace IANTLibrary
                                 bullets[i] = new Bullet(bulletProperties, this);
                                 break;
                             case ElelmentType.Ice:
-                                bullets[i] = new IceBullet(bulletProperties, this, (Level-1)/3);
+                                bullets[i] = new IceBullet(bulletProperties, this, ElementLevel);
                                 break;
                             case ElelmentType.Fire:
-                                bullets[i] = new FireBullet(bulletProperties, this, (Level - 1) / 3);
+                                bullets[i] = new FireBullet(bulletProperties, this, ElementLevel);
                                 break;
                             case ElelmentType.Thunder:
                                 bulletProperties.isPenetrable = true;
-                                bullets[i] = new ThunderBullet(bulletProperties, this, (Level - 1) / 3);
+                                bullets[i] = new ThunderBullet(bulletProperties, this, ElementLevel);
                                 break;
                             case ElelmentType.Wind:
-                                bulletProperties.speed /= 2f;
-                                bullets[i] = new WindBullet(bulletProperties, this, (Level - 1) / 3, TargetAimed);
+                                bullets[i] = new WindBullet(bulletProperties, this, ElementLevel, TargetAimed);
                                 break;
                             case ElelmentType.Poison:
                                 bulletProperties.isPenetrable = true;
-                                bullets[i] = new PoisonBullet(bulletProperties, this, (Level - 1) / 3);
+                                bullets[i] = new PoisonBullet(bulletProperties, this, ElementLevel);
                                 break;
                             case ElelmentType.Wood:
                                 bullets[i] = new WoodBullet(bulletProperties, this);
@@ -152,108 +152,112 @@ namespace IANTLibrary
         }
         public Tower GetUpgradeSample(TowerUpgradeDirection direction)
         {
-            TowerProperties newTowerProperties = new TowerProperties
-            {
-                level = Level + 1,
-                positionX = PositionX,
-                positionY = PositionY,
-                upgradeCost = UpgradeCost * 2,
-                destroyReturn = DestroyReturn * 2,
-                elementType = ElelmentType.Normal
-            };
-            switch (direction)
-            {
-                case TowerUpgradeDirection.Damage:
-                    newTowerProperties.damage = Damage + 2;
-                    break;
-                case TowerUpgradeDirection.Speed:
-                    newTowerProperties.speed = Speed + 50;
-                    break;
-                case TowerUpgradeDirection.Range:
-                    newTowerProperties.range = Range + 30;
-                    break;
-                case TowerUpgradeDirection.Frequency:
-                    newTowerProperties.frequency = Frequency + 0.5f;
-                    break;
-                case TowerUpgradeDirection.BulletNumber:
-                    newTowerProperties.bulletNumber = BulletNumber + 1;
-                    newTowerProperties.bulletSpanRange = 10;
-                    break;
-            }
-            return new Tower(newTowerProperties);
+            Tower newTower = Duplicate();
+            newTower.Upgrade(direction);
+            return newTower;
         }
         public Tower GetElementUpgradeSample(ElelmentType elementType)
         {
-            TowerProperties newTowerProperties = new TowerProperties
+            Tower newTower = Duplicate();
+            newTower.ElementUpgrade(elementType);
+            return newTower;
+        }
+        public virtual void Upgrade(TowerUpgradeDirection direction)
+        {
+            Level = Level + 1;
+            UpgradeCost = Convert.ToInt32(Math.Ceiling(UpgradeCost * TowerUpgradeConfiguration.UpgradeCostIncreaseRatio));
+            DestroyReturn = Convert.ToInt32(Math.Ceiling(DestroyReturn * TowerUpgradeConfiguration.UpgradeCostIncreaseRatio));
+            switch (direction)
             {
-                level = Level + 1,
-                positionX = PositionX,
-                positionY = PositionY,
-                upgradeCost = UpgradeCost * 2,
-                destroyReturn = DestroyReturn * 2,
-                elementType = elementType
-            };
-            switch (elementType)
-            {
-                case ElelmentType.Ice:
-                    newTowerProperties.bulletSpanRange = BulletSpanRange + 1;
-                    newTowerProperties.name = "冰凍塔";
+                case TowerUpgradeDirection.Damage:
+                    Damage = Damage + TowerUpgradeConfiguration.UpgradeDamageDelta;
                     break;
-                case ElelmentType.Fire:
-                    newTowerProperties.damage = Convert.ToInt32(Damage * 1.3f);
-                    newTowerProperties.frequency = Frequency * 1.5f;
-                    newTowerProperties.name = "火焰塔";
+                case TowerUpgradeDirection.Speed:
+                    Speed = Speed + TowerUpgradeConfiguration.UpgradeSpeedDelta;
                     break;
-                case ElelmentType.Thunder:
-                    newTowerProperties.speed = Speed * 0.95f;
-                    newTowerProperties.bulletSpanRange = BulletSpanRange * 0.7f;
-                    newTowerProperties.damage = Convert.ToInt32(Damage * 1.4f);
-                    newTowerProperties.frequency = Frequency * 1.1f;
-                    newTowerProperties.name = "閃電塔";
+                case TowerUpgradeDirection.Range:
+                    Range = Range + TowerUpgradeConfiguration.UpgradeRangeDelta;
                     break;
-                case ElelmentType.Wind:
-                    newTowerProperties.range = Range * 1.3f;
-                    newTowerProperties.name = "風暴塔";
+                case TowerUpgradeDirection.Frequency:
+                    Frequency = Frequency + TowerUpgradeConfiguration.UpgradeFrequencyDelta;
                     break;
-                case ElelmentType.Poison:
-                    newTowerProperties.frequency = Frequency * 0.9f;
-                    newTowerProperties.bulletNumber = BulletNumber + 1;
-                    newTowerProperties.name = "毒物塔";
-                    break;
-                case ElelmentType.Wood:
-                    newTowerProperties.damage = Convert.ToInt32(Damage * 1.5f);
-                    newTowerProperties.name = "森林塔";
+                case TowerUpgradeDirection.BulletNumber:
+                    BulletNumber = BulletNumber + TowerUpgradeConfiguration.UpgradeBulletNumberDelta;
+                    BulletSpanRange = TowerUpgradeConfiguration.UpgradeBulletSpanRangeDelta;
                     break;
             }
-            return new Tower(newTowerProperties);
         }
         public virtual void Upgrade(TowerUpgradeDirection direction, Game game)
         {
             if(game.Money >= UpgradeCost)
             {
                 game.Money -= UpgradeCost;
-                Level = Level + 1;
-                UpgradeCost = Convert.ToInt32(Math.Ceiling(UpgradeCost * 1.6));
-                DestroyReturn = Convert.ToInt32(Math.Ceiling(DestroyReturn * 1.6));
-                switch (direction)
-                {
-                    case TowerUpgradeDirection.Damage:
-                        Damage = Damage + 2;
-                        break;
-                    case TowerUpgradeDirection.Speed:
-                        Speed = Speed + 50;
-                        break;
-                    case TowerUpgradeDirection.Range:
-                        Range = Range + 30;
-                        break;
-                    case TowerUpgradeDirection.Frequency:
-                        Frequency = Frequency + 0.5f;
-                        break;
-                    case TowerUpgradeDirection.BulletNumber:
-                        BulletNumber = BulletNumber + 1;
-                        BulletSpanRange = 10;
-                        break;
-                }
+                Upgrade(direction);
+            }
+        }
+        public virtual void ElementUpgrade(ElelmentType elementType)
+        {
+            Level = Level + 1;
+            UpgradeCost = Convert.ToInt32(Math.Ceiling(UpgradeCost * 1.9));
+            DestroyReturn = Convert.ToInt32(Math.Ceiling(DestroyReturn * 1.9));
+            if (ElementType == ElelmentType.Normal)
+                ElementType = elementType;
+            switch (ElementType)
+            {
+                case ElelmentType.Ice:
+                    Name = "冰凍塔";
+                    Damage = Convert.ToInt32(Damage * TowerUpgradeConfiguration.IceTowerUpgradeDamageRatio);
+                    Range = Range * TowerUpgradeConfiguration.IceTowerUpgradeRangeRatio;
+                    Frequency = Frequency * TowerUpgradeConfiguration.IceTowerUpgradeFrequencyRatio;
+                    Speed = Speed * TowerUpgradeConfiguration.IceTowerUpgradeSpeedRatio;
+                    BulletNumber = BulletNumber + TowerUpgradeConfiguration.IceTowerUpgradeBulletNumberDelta;
+                    BulletSpanRange = BulletSpanRange + TowerUpgradeConfiguration.IceTowerUpgradeBulletSpanRangeDelta;
+                    break;
+                case ElelmentType.Fire:
+                    Name = "火焰塔";
+                    Damage = Convert.ToInt32(Damage * TowerUpgradeConfiguration.FireTowerUpgradeDamageRatio);
+                    Range = Range * TowerUpgradeConfiguration.FireTowerUpgradeRangeRatio;
+                    Frequency = Frequency * TowerUpgradeConfiguration.FireTowerUpgradeFrequencyRatio;
+                    Speed = Speed * TowerUpgradeConfiguration.FireTowerUpgradeSpeedRatio;
+                    BulletNumber = BulletNumber + TowerUpgradeConfiguration.FireTowerUpgradeBulletNumberDelta;
+                    BulletSpanRange = BulletSpanRange + TowerUpgradeConfiguration.FireTowerUpgradeBulletSpanRangeDelta;
+                    break;
+                case ElelmentType.Thunder:
+                    Name = "閃電塔";
+                    Damage = Convert.ToInt32(Damage * TowerUpgradeConfiguration.ThunderTowerUpgradeDamageRatio);
+                    Range = Range * TowerUpgradeConfiguration.ThunderTowerUpgradeRangeRatio;
+                    Frequency = Frequency * TowerUpgradeConfiguration.ThunderTowerUpgradeFrequencyRatio;
+                    Speed = Speed * TowerUpgradeConfiguration.ThunderTowerUpgradeSpeedRatio;
+                    BulletNumber = BulletNumber + TowerUpgradeConfiguration.ThunderTowerUpgradeBulletNumberDelta;
+                    BulletSpanRange = BulletSpanRange + TowerUpgradeConfiguration.ThunderTowerUpgradeBulletSpanRangeDelta;
+                    break;
+                case ElelmentType.Wind:
+                    Name = "風暴塔";
+                    Damage = Convert.ToInt32(Damage * TowerUpgradeConfiguration.WindTowerUpgradeDamageRatio);
+                    Range = Range * TowerUpgradeConfiguration.WindTowerUpgradeRangeRatio;
+                    Frequency = Frequency * TowerUpgradeConfiguration.WindTowerUpgradeFrequencyRatio;
+                    Speed = Speed * TowerUpgradeConfiguration.WindTowerUpgradeSpeedRatio;
+                    BulletNumber = BulletNumber + TowerUpgradeConfiguration.WindTowerUpgradeBulletNumberDelta;
+                    BulletSpanRange = BulletSpanRange + TowerUpgradeConfiguration.WindTowerUpgradeBulletSpanRangeDelta;
+                    break;
+                case ElelmentType.Poison:
+                    Name = "毒物塔";
+                    Damage = Convert.ToInt32(Damage * TowerUpgradeConfiguration.PoisonTowerUpgradeDamageRatio);
+                    Range = Range * TowerUpgradeConfiguration.PoisonTowerUpgradeRangeRatio;
+                    Frequency = Frequency * TowerUpgradeConfiguration.PoisonTowerUpgradeFrequencyRatio;
+                    Speed = Speed * TowerUpgradeConfiguration.PoisonTowerUpgradeSpeedRatio;
+                    BulletNumber = BulletNumber + TowerUpgradeConfiguration.PoisonTowerUpgradeBulletNumberDelta;
+                    BulletSpanRange = BulletSpanRange + TowerUpgradeConfiguration.PoisonTowerUpgradeBulletSpanRangeDelta;
+                    break;
+                case ElelmentType.Wood:
+                    Name = "森林塔";
+                    Damage = Convert.ToInt32(Damage * TowerUpgradeConfiguration.WoodTowerUpgradeDamageRatio);
+                    Range = Range * TowerUpgradeConfiguration.WoodTowerUpgradeRangeRatio;
+                    Frequency = Frequency * TowerUpgradeConfiguration.WoodTowerUpgradeFrequencyRatio;
+                    Speed = Speed * TowerUpgradeConfiguration.WoodTowerUpgradeSpeedRatio;
+                    BulletNumber = BulletNumber + TowerUpgradeConfiguration.WoodTowerUpgradeBulletNumberDelta;
+                    BulletSpanRange = BulletSpanRange + TowerUpgradeConfiguration.WoodTowerUpgradeBulletSpanRangeDelta;
+                    break;
             }
         }
         public virtual void ElementUpgrade(ElelmentType elementType, Game game)
@@ -261,44 +265,7 @@ namespace IANTLibrary
             if (game.Money >= UpgradeCost)
             {
                 game.Money -= UpgradeCost;
-                Level = Level + 1;
-                UpgradeCost = Convert.ToInt32(Math.Ceiling(UpgradeCost * 1.6));
-                DestroyReturn = Convert.ToInt32(Math.Ceiling(DestroyReturn * 1.6));
-                if (ElementType == ElelmentType.Normal)
-                    ElementType = elementType;
-                switch (ElementType)
-                {
-                    case ElelmentType.Ice:
-                        BulletSpanRange = BulletSpanRange + 1;
-                        Name = "冰凍塔";
-                        break;
-                    case ElelmentType.Fire:
-                        Damage = Convert.ToInt32(Damage * 1.3f);
-                        Frequency = Frequency * 1.5f;
-                        Name = "火焰塔";
-                        break;
-                    case ElelmentType.Thunder:
-                        Speed = Speed * 0.95f;
-                        Damage = Convert.ToInt32(Damage * 1.4f);
-                        BulletSpanRange = BulletSpanRange * 0.7f;
-                        Frequency = Frequency * 1.1f;
-                        Name = "閃電塔";
-                        break;
-                    case ElelmentType.Wind:
-                        Range = Range * 1.3f;
-                        Name = "風暴塔";
-                        break;
-                    case ElelmentType.Poison:
-                        Frequency = Frequency * 0.9f;
-                        BulletNumber = BulletNumber + 1;
-                        BulletSpanRange = 15;
-                        Name = "毒物塔";
-                        break;
-                    case ElelmentType.Wood:
-                        Damage = Convert.ToInt32(Damage * 1.5f);
-                        Name = "森林塔";
-                        break;
-                }
+                ElementUpgrade(elementType);
             }
         }
     }

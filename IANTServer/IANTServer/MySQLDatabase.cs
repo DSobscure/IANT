@@ -12,11 +12,22 @@ namespace IANTServer
     {
         private MySqlConnection connection;
 
-        public ConnectionState Connect(string hostName, string userName, string password, string database)
+        private void QueryStartTask()
+        {
+            if (connection != null && connection.State != ConnectionState.Open)
+                connection.Open();
+        }
+        private void QueryEndTask()
+        {
+            if (connection != null && connection.State == ConnectionState.Open)
+                connection.Close();
+        }
+
+        public bool Connect(string hostName, string userName, string password, string database)
         {
             string connectString = string.Format("server={0};uid={1};pwd={2};database={3}", hostName, userName, password, database);
             connection = new MySqlConnection(connectString);
-            return connection.State;
+            return connection != null;
         }
 
         public void Dispose()
@@ -30,7 +41,7 @@ namespace IANTServer
             throw new NotImplementedException();
         }
 
-        public bool InsertData(List<string> columns, List<string> values, string table)
+        public bool InsertData(string[] columns, object[] values, string table)
         {
             try
             {
@@ -38,7 +49,7 @@ namespace IANTServer
 
                 StringBuilder sqlText = new StringBuilder();
                 sqlText.Append("INSERT INTO " + table + " (" + columns[0]);
-                int insertNumber = columns.Count;
+                int insertNumber = columns.Length;
                 for (int index1 = 1; index1 < insertNumber; index1++)
                 {
                     sqlText.Append("," + columns[index1]);
@@ -72,7 +83,7 @@ namespace IANTServer
             }
         }
 
-        public List<string> ReadDataByUniqueID(int uniqueID, List<string> columns, string table)
+        public string[] ReadDataByUniqueID(int uniqueID, string[] columns, string table)
         {
             try
             {
@@ -80,7 +91,7 @@ namespace IANTServer
 
                 StringBuilder sqlText = new StringBuilder();
                 sqlText.Append("SELECT " + columns[0]);
-                int requestNumber = columns.Count;
+                int requestNumber = columns.Length;
                 for (int index = 1; index < requestNumber; index++)
                 {
                     sqlText.Append("," + columns[index]);
@@ -101,7 +112,7 @@ namespace IANTServer
                                 else
                                     returnValue.Add(reader.GetString(index));
                             }
-                            return returnValue;
+                            return returnValue.ToArray();
                         }
                         else
                         {
@@ -158,15 +169,105 @@ namespace IANTServer
             }
         }
 
-        private void QueryStartTask()
+        public object[] GetDataByUniqueID(int uniqueID, string[] requestItems, TypeCode[] requestTypes, string table)
         {
-            if (connection != null && connection.State != ConnectionState.Open)
-                connection.Open();
+            try
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+                StringBuilder sqlText = new StringBuilder();
+                sqlText.Append("SELECT " + requestItems[0]);
+                int requestNumber = requestItems.Length;
+                for (int index1 = 1; index1 < requestNumber; index1++)
+                {
+                    sqlText.Append("," + requestItems[index1]);
+                }
+                sqlText.Append(" FROM " + table + " WHERE UniqueID=@uniqueID");
+                using (MySqlCommand cmd = new MySqlCommand(sqlText.ToString(), connection))
+                {
+                    cmd.Parameters.AddWithValue("@uniqueID", uniqueID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            object[] returnValue = new object[requestNumber];
+                            for (int index1 = 0; index1 < requestNumber; index1++)
+                            {
+                                if (reader.IsDBNull(index1))
+                                    returnValue[index1] = null;
+                                else
+                                {
+                                    switch (requestTypes[index1])
+                                    {
+                                        case TypeCode.Boolean:
+                                            returnValue[index1] = reader.GetBoolean(index1);
+                                            break;
+                                        case TypeCode.String:
+                                            returnValue[index1] = reader.GetString(index1);
+                                            break;
+                                        case TypeCode.Int32:
+                                            returnValue[index1] = reader.GetInt32(index1);
+                                            break;
+                                        case TypeCode.Single:
+                                            returnValue[index1] = reader.GetFloat(index1);
+                                            break;
+                                        case TypeCode.Int64:
+                                            returnValue[index1] = reader.GetInt64(index1);
+                                            break;
+                                    }
+                                }
+                            }
+                            return returnValue;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
         }
-        private void QueryEndTask()
+
+        public bool ContainsPlayer(long facebookID, out int uniqueID)
         {
-            if (connection != null && connection.State == ConnectionState.Open)
-                connection.Close();
+            try
+            {
+                QueryStartTask();
+                using (MySqlCommand command = new MySqlCommand("SELECT UniqueID FROM player WHERE FacebookID = @facebookID LIMIT 1;", connection))
+                {
+                    command.Parameters.AddWithValue("@facebookID", facebookID);
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            uniqueID = reader.GetInt32("UniqueID");
+                            return true;
+                        }
+                        else
+                        {
+                            uniqueID = -1;
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                QueryEndTask();
+            }
         }
     }
 }

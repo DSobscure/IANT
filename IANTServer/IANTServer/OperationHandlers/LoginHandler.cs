@@ -2,8 +2,10 @@
 using System.Net;
 using System.IO;
 using IANTProtocol;
+using System.Collections.Generic;
+using System;
 
-namespace IANTServer
+namespace IANTServer.OperationHandlers
 {
     class LoginHandler : OperationHandler
     {
@@ -31,6 +33,19 @@ namespace IANTServer
                     reader = new StreamReader(data);
                     responseText = reader.ReadToEnd();
                     Application.Log.Info(responseText);
+                    data?.Close();
+                    reader?.Close();
+                    ServerPlayer player = Application.ServerInstance.InstantiatePlayerWithFacebookID(Convert.ToInt64(facebookID), peer);
+                    peer.BindPlayer(player);
+                    Application.ServerInstance.PlayrOnline(player);
+                    Dictionary<byte, object> parameter = new Dictionary<byte, object>()
+                    {
+                        { (byte)LoginResponseParameterCode.UniqueID, player.UniqueID },
+                        { (byte)LoginResponseParameterCode.Level, player.Level },
+                        { (byte)LoginResponseParameterCode.EXP, player.EXP}
+                    };
+                    SendResponse(operationRequest.OperationCode, parameter);
+                    return true;
                 }
                 catch (WebException exception)
                 {
@@ -39,13 +54,11 @@ namespace IANTServer
                         responseText = readerEX.ReadToEnd();
                         Application.Log.Info(responseText);
                     }
-                }
-                finally
-                {
                     data?.Close();
                     reader?.Close();
+                    SendError(operationRequest.OperationCode, StatusCode.PermissionDeny, "id或access token錯誤");
+                    return false;
                 }
-                return true;
             }
             else
             {

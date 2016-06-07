@@ -4,6 +4,19 @@ using IANTLibrary.Bullets;
 
 public class BulletController : MonoBehaviour
 {
+    [SerializeField]
+    private Material iceMaterial;
+    [SerializeField]
+    private Material fireMaterial;
+    [SerializeField]
+    private Material thunderMaterial;
+    [SerializeField]
+    private Material windMaterial;
+    [SerializeField]
+    private Material poisonMaterial;
+    [SerializeField]
+    private Material woodMaterial;
+
     private float lifeTime = 5f;
     private Bullet bullet;
 
@@ -43,22 +56,22 @@ public class BulletController : MonoBehaviour
         switch (bullet.ElementTyple)
         {
             case ElelmentType.Ice:
-                GetComponent<SpriteRenderer>().color = new Color(170f / 255f, 255f / 255f, 228 / 255f);
+                GetComponent<SpriteRenderer>().material = iceMaterial;
                 break;
             case ElelmentType.Fire:
-                GetComponent<SpriteRenderer>().color = new Color(255f / 255f, 84f / 255f, 0f / 255f);
+                GetComponent<SpriteRenderer>().material = fireMaterial;
                 break;
             case ElelmentType.Thunder:
-                GetComponent<SpriteRenderer>().color = new Color(120f / 255f, 56f / 255f, 138f / 255f);
+                GetComponent<SpriteRenderer>().material = thunderMaterial;
                 break;
             case ElelmentType.Wind:
-                GetComponent<SpriteRenderer>().color = new Color(160f / 255f, 255f / 255f, 171f / 255f);
+                GetComponent<SpriteRenderer>().material = windMaterial;
                 break;
             case ElelmentType.Poison:
-                GetComponent<SpriteRenderer>().color = new Color(37f / 255f, 82f / 255f, 33f / 255f);
+                GetComponent<SpriteRenderer>().material = poisonMaterial;
                 break;
             case ElelmentType.Wood:
-                GetComponent<SpriteRenderer>().color = new Color(0f / 255f, 197f / 255f, 9f / 255f);
+                GetComponent<SpriteRenderer>().material = woodMaterial;
                 break;
         }
     }

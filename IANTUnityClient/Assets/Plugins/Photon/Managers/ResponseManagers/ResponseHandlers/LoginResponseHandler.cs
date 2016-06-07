@@ -1,5 +1,8 @@
 ﻿using ExitGames.Client.Photon;
 using IANTProtocol;
+using System.Collections.Generic;
+using IANTLibrary;
+using System;
 
 public class LoginResponseHandler : ResponseHandler
 {
@@ -7,6 +10,18 @@ public class LoginResponseHandler : ResponseHandler
     {
         if(base.Handle(operationResponse))
         {
+            int uniqueID = (int)operationResponse.Parameters[(byte)LoginResponseParameterCode.UniqueID];
+            int level = (int)operationResponse.Parameters[(byte)LoginResponseParameterCode.Level];
+            int exp = (int)operationResponse.Parameters[(byte)LoginResponseParameterCode.EXP];
+            IANTGame.Player = new IANTLibrary.Player(uniqueID, new PlayerProperties
+            {
+                facebookID = Convert.ToInt64(IANTGame.FacebookID),
+                level = level,
+                exp = exp,
+                foodInfos = new List<FoodInfo>(),
+                nests = new List<Nest>()
+            });
+            IANTGame.ResponseManager.AuthenticationResponseManager.CallLoginResponse();
             IANTGame.InformManager.SystemInformManager.CallDebugReturn("login successiful");
             return true;
         }
@@ -23,7 +38,7 @@ public class LoginResponseHandler : ResponseHandler
         {
             return false;
         }
-        if (operationResponse.Parameters.Count != 0)
+        if (operationResponse.Parameters.Count != 3)
         {
             return false;
         }

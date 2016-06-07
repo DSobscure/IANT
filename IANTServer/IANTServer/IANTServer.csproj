@@ -38,11 +38,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\ExitGamesLibs.dll</HintPath>
     </Reference>
-    <Reference Include="IANTLibrary">
-      <HintPath>..\IANTLibrary\bin\Debug\IANTLibrary.dll</HintPath>
+    <Reference Include="IANTLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\IANT\IANT\Assets\Plugins\IANT\IANTLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="IANTProtocol">
-      <HintPath>..\IANTProtocol\bin\Debug\IANTProtocol.dll</HintPath>
+    <Reference Include="IANTProtocol, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\IANT\IANT\Assets\Plugins\IANT\IANTProtocol.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -75,11 +77,17 @@
     <Compile Include="IDatabase.cs" />
     <Compile Include="MySQLDatabase.cs" />
     <Compile Include="OperationHandler.cs" />
+    <Compile Include="OperationHandlers\GetConfigurationsHandler.cs" />
     <Compile Include="OperationHandlers\LoginHandler.cs" />
     <Compile Include="OperationManager.cs" />
     <Compile Include="Peer.cs" />
     <Compile Include="PlayerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerPlayer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -25,7 +25,7 @@ public class PhotonService : IPhotonPeerListener
 
     public void OnOperationResponse(OperationResponse operationResponse)
     {
-        throw new NotImplementedException();
+        IANTGame.ResponseManager.Operate(operationResponse);
     }
 
     public void OnStatusChanged(StatusCode statusCode)

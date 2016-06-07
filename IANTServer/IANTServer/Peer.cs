@@ -8,15 +8,15 @@ namespace IANTServer
     public class Peer : ClientPeer
     {
         public Guid Guid { get; }
-        protected Player player;
+        public Player Player { get; protected set; }
         public int PlayerUniqueID
         {
             get
             {
-                if (player == null)
+                if (Player == null)
                     return -1;
                 else
-                    return player.UniqueID;
+                    return Player.UniqueID;
             }
         }
         protected OperationManager operationManager;
@@ -38,15 +38,15 @@ namespace IANTServer
 
         protected override void OnDisconnect(DisconnectReason reasonCode, string reasonDetail)
         {
-            if(player != null)
+            if(Player != null)
             {
-                if (Application.ServerInstance.PlayerOffline(player))
+                if (Application.ServerInstance.PlayerOffline(Player))
                 {
-                    Application.Log.Info(string.Format("player offline uniqueID:{0}", player.UniqueID));
+                    Application.Log.Info(string.Format("player offline uniqueID:{0}", Player.UniqueID));
                 }
                 else
                 {
-                    Application.Log.Info(string.Format("player offline fail uniqueID:{0}", player.UniqueID));
+                    Application.Log.Info(string.Format("player offline fail uniqueID:{0}", Player.UniqueID));
                 }
             }
             if(Application.ServerInstance.TerminateConnection(this))
@@ -62,6 +62,10 @@ namespace IANTServer
         protected override void OnOperationRequest(OperationRequest operationRequest, SendParameters sendParameters)
         {
             operationManager.Operate(operationRequest);
+        }
+        public void BindPlayer(Player player)
+        {
+            Player = player;
         }
     }
 }

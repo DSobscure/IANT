@@ -8,13 +8,15 @@ namespace Managers
     {
         protected readonly Dictionary<OperationCode, ResponseHandler> responseTable;
         public readonly SystemResponseManager SystemResponseManager = new SystemResponseManager();
-        public readonly AuthenticateResponseManager AuthenticateResponseManager = new AuthenticateResponseManager();
+        public readonly AuthenticationResponseManager AuthenticationResponseManager = new AuthenticationResponseManager();
+        public readonly FetchDataResponseManager FetchDataResponseManager = new FetchDataResponseManager();
 
         public ResponseManager()
         {
             responseTable = new Dictionary<OperationCode, ResponseHandler>()
             {
-                { OperationCode.Login, new LoginResponseHandler() }
+                { OperationCode.Login, new LoginResponseHandler() },
+                { OperationCode.GetConfigurations, new GetConfigurationsResponseHandler() }
             };
         }
 
