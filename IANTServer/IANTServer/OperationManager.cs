@@ -1,6 +1,7 @@
 ﻿using IANTProtocol;
 using Photon.SocketServer;
 using System.Collections.Generic;
+using IANTServer.OperationHandlers;
 
 namespace IANTServer
 {
@@ -14,6 +15,7 @@ namespace IANTServer
             this.peer = peer;
             operationTable = new Dictionary<OperationCode, OperationHandler>()
             {
+                { OperationCode.GetConfigurations, new GetConfigurationsHandler(peer) },
                 { OperationCode.Login, new LoginHandler(peer) }
             };
         }
@@ -23,7 +25,10 @@ namespace IANTServer
             OperationCode operationCode = (OperationCode)operationRequest.OperationCode;
             if (operationTable.ContainsKey(operationCode))
             {
-                operationTable[operationCode].Handle(operationRequest);
+                if(!operationTable[operationCode].Handle(operationRequest))
+                {
+                    Application.Log.ErrorFormat("Operation Error: {0} from {1}", operationCode, peer.Guid);
+                }
             }
             else
             {

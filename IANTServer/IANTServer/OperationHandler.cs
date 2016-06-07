@@ -26,6 +26,7 @@ namespace IANTServer
             }
             else
             {
+                Application.Log.InfoFormat("{0} do {1}", peer.Guid, (OperationCode)operationRequest.OperationCode);
                 return true;
             }
         }

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 public class StartMenuUI : MonoBehaviour
 {
     [SerializeField]
-    private StartMenuAction startMenuAction;
-
-    [SerializeField]
     internal Text resultText;
+    [SerializeField]
+    private GameObject testGameButton;
 
-	void Start ()
+    public void LoadedConfigurations()
     {
-        startMenuAction = GameObject.FindGameObjectWithTag("Actions").GetComponent<StartMenuAction>();
+        resultText.text = "已載入遊戲設定";
+        testGameButton.SetActive(true);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Managers;
 using IANTLibrary;
+using UnityEngine;
+using System.Collections.Generic;
 
 public static class IANTGame
 {
@@ -14,4 +16,9 @@ public static class IANTGame
 
     public static Game Game;
     public static Player Player;
+    public static bool IsLoadedConfigurations = false;
+    public static string FacebookID = null;
+    public static string FacebookAccessToken = null;
+    public static IDictionary<string, object> ProfileResult = null;
+    public static Texture2D ProfilePicture = null;
 }

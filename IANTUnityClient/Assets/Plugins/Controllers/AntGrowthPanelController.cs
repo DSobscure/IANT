@@ -14,6 +14,8 @@ public class AntGrowthPanelController : MonoBehaviour
     private Slider resistantSlider;
     [SerializeField]
     private Slider numberSlider;
+    [SerializeField]
+    private Slider sensorSlider;
 
     void Start()
     {
@@ -21,6 +23,7 @@ public class AntGrowthPanelController : MonoBehaviour
         speedSlider.value = FoodManagerTest.AntGrowthProperties.speed;
         resistantSlider.value = FoodManagerTest.AntGrowthProperties.resistant;
         numberSlider.value = FoodManagerTest.AntGrowthProperties.number;
+        sensorSlider.value = FoodManagerTest.AntGrowthProperties.sensorDistance;
     }
 
     public void Open()
@@ -38,7 +41,8 @@ public class AntGrowthPanelController : MonoBehaviour
             duration = (int)durationSlider.value,
             speed = (int)speedSlider.value,
             resistant = (int)resistantSlider.value,
-            number = (int)numberSlider.value
+            number = (int)numberSlider.value,
+            sensorDistance = (int)sensorSlider.value
         };
     }
 }

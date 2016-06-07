@@ -59,8 +59,8 @@ public class TowerInfoController : MonoBehaviour
         stringBuilder.AppendFormat("{0}\n", tower.Name);
         stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
         stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-        stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-        stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
+        stringBuilder.AppendFormat("頻率： {0} 次/秒\n", tower.Frequency);
+        stringBuilder.AppendFormat("初速度： {0}\n", tower.Speed);
         stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
         towerInfoText.text = stringBuilder.ToString();
     }
@@ -76,44 +76,26 @@ public class TowerInfoController : MonoBehaviour
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.AppendFormat("{0} → {1}\n", tower.Name, upgradedTower.Name);
         stringBuilder.AppendFormat("消耗金錢 {0}\n", tower.UpgradeCost);
-        switch(direction)
-        {
-            case TowerUpgradeDirection.Damage:
-                stringBuilder.AppendFormat("傷害： {0} → {1}\n", tower.Damage, upgradedTower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                break;
-            case TowerUpgradeDirection.Range:
-                stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
-                stringBuilder.AppendFormat("射程： {0} → {1}\n", tower.Range, upgradedTower.Range);
-                stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                break;
-            case TowerUpgradeDirection.Frequency:
-                stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                break;
-            case TowerUpgradeDirection.Speed:
-                stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                break;
-            case TowerUpgradeDirection.BulletNumber:
-                stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
-                break;
-        }
+        if (tower.Damage != upgradedTower.Damage)
+            stringBuilder.AppendFormat("傷害： {0} → {1}\n", tower.Damage, upgradedTower.Damage);
+        else
+            stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
+        if (tower.Range != upgradedTower.Range)
+            stringBuilder.AppendFormat("射程： {0} → {1}\n", tower.Range, upgradedTower.Range);
+        else
+            stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
+        if (tower.Frequency != upgradedTower.Frequency)
+            stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
+        else
+            stringBuilder.AppendFormat("頻率： {0} 次/秒\n", tower.Frequency);
+        if(tower.Speed != upgradedTower.Speed)
+            stringBuilder.AppendFormat("頻率： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
+        else
+            stringBuilder.AppendFormat("初速度： {0}\n", tower.Speed);
+        if(tower.BulletNumber != upgradedTower.BulletNumber)
+            stringBuilder.AppendFormat("初速度： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
+        else
+            stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
         towerInfoText.text = stringBuilder.ToString();
     }
     public void ShowTowerElementUpgradeInfo(Tower tower, ElelmentType elementType)
@@ -122,56 +104,28 @@ public class TowerInfoController : MonoBehaviour
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.AppendFormat("{0} → {1}\n", tower.Name, upgradedTower.Name);
         stringBuilder.AppendFormat("消耗金錢 {0}\n", tower.UpgradeCost);
-        switch (elementType)
-        {
-            case ElelmentType.Ice:
-                stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                stringBuilder.AppendFormat("砲彈夾角：{0} → {1}\n", tower.BulletSpanRange, upgradedTower.BulletSpanRange);
-                break;
-            case ElelmentType.Fire:
-                stringBuilder.AppendFormat("傷害： {0} → {1}\n", tower.Damage, upgradedTower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                break;
-            case ElelmentType.Thunder:
-                stringBuilder.AppendFormat("傷害： {0} → {1}\n", tower.Damage, upgradedTower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                stringBuilder.AppendFormat("砲彈夾角：{0} → {1}\n", tower.BulletSpanRange, upgradedTower.BulletSpanRange);
-                break;
-            case ElelmentType.Wind:
-                stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
-                stringBuilder.AppendFormat("射程： {0} → {1}\n", tower.Range, upgradedTower.Range);
-                stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                break;
-            case ElelmentType.Poison:
-                stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
-                break;
-            case ElelmentType.Wood:
-                stringBuilder.AppendFormat("傷害： {0} → {1}\n", tower.Damage, upgradedTower.Damage);
-                stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
-                stringBuilder.AppendFormat("射速： {0} 次/秒\n", tower.Frequency);
-                stringBuilder.AppendFormat("彈速： {0}\n", tower.Speed);
-                stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
-                break;
-            default:
-                stringBuilder.AppendFormat("還沒做\n");
-                break;
-        }
+        if (tower.Damage != upgradedTower.Damage)
+            stringBuilder.AppendFormat("傷害： {0} → {1}\n", tower.Damage, upgradedTower.Damage);
+        else
+            stringBuilder.AppendFormat("傷害： {0}\n", tower.Damage);
+        if (tower.Range != upgradedTower.Range)
+            stringBuilder.AppendFormat("射程： {0} → {1}\n", tower.Range, upgradedTower.Range);
+        else
+            stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
+        if (tower.Frequency != upgradedTower.Frequency)
+            stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
+        else
+            stringBuilder.AppendFormat("頻率： {0} 次/秒\n", tower.Frequency);
+        if (tower.Speed != upgradedTower.Speed)
+            stringBuilder.AppendFormat("頻率： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
+        else
+            stringBuilder.AppendFormat("初速度： {0}\n", tower.Speed);
+        if (tower.BulletNumber != upgradedTower.BulletNumber)
+            stringBuilder.AppendFormat("初速度： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
+        else
+            stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
+        if(tower.BulletSpanRange != upgradedTower.BulletSpanRange)
+            stringBuilder.AppendFormat("砲彈夾角：{0} → {1}\n", tower.BulletSpanRange, upgradedTower.BulletSpanRange);
         towerInfoText.text = stringBuilder.ToString();
     }
 }
