@@ -80,7 +80,7 @@ public class FacebookAction : MonoBehaviour, IResponseHandler
     {
         if (string.IsNullOrEmpty(result.Error) && result.Texture != null)
         {
-            IANTGame.ProfilePicture = result.Texture;
+            IANTGame.ProfilePhoto = result.Texture;
         }
     }
 }

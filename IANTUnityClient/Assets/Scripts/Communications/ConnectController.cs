@@ -4,10 +4,13 @@ using Managers;
 public class ConnectController : MonoBehaviour, IResponseHandler
 {
     private bool ConnectStatus = true;
+    [SerializeField]
+    private Texture2D connectingIcon;
+    [SerializeField]
+    private Texture2D disconnectIcon;
 
     void Awake()
     {
-        GameObject.DontDestroyOnLoad(this.gameObject);
         RegisterEvents(IANTGame.ResponseManager);
     }
 
@@ -45,14 +48,15 @@ public class ConnectController : MonoBehaviour, IResponseHandler
 
     void OnGUI()
     {
+        //GUI.Label(new Rect(20, 10, 100, 20), string.Format("{0}FPS", 1f / Time.smoothDeltaTime));
         if (ConnectStatus == false)
         {
-            GUI.Label(new Rect(130, 10, 100, 20), "Connect fail");
+            GUI.DrawTexture(new Rect(10, 1, 10, 10), disconnectIcon, ScaleMode.ScaleToFit, true);
         }
 
         if (IANTGame.Service.ServerConnected)
         {
-            GUI.Label(new Rect(130, 10, 100, 20), "Connecting . . .");
+            GUI.DrawTexture(new Rect(10, 1, 10, 10), connectingIcon, ScaleMode.ScaleToFit, true);
         }
     }
 

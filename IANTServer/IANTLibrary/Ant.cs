@@ -68,7 +68,7 @@ namespace IANTLibrary
                 }
                 else if(IceEffectDuration > 0 || FireEffectDuration > 0)
                 {
-                    return properties.velocity / Math.Max(IceEffectSlowDownRatio, 1) * Math.Max(1+FireEffectSpeedUp, 1);
+                    return properties.velocity / Math.Max(IceEffectSlowDownRatio + 1, 1) * Math.Max(1+FireEffectSpeedUp, 1);
                 }
                 else
                 {
@@ -155,7 +155,7 @@ namespace IANTLibrary
         public void LevelUp()
         {
             Level += 1;
-            properties.maxHP = Convert.ToInt32(3 + Math.Pow(1 + nest.GrowthProperties.duration + Level / 4.5f, 2.1));
+            properties.maxHP = Convert.ToInt32(3 + Math.Pow(1 + Level / 4.5f, 2 + nest.GrowthProperties.duration/10.0));
             HP = MaxHP;
             Speed += nest.GrowthProperties.speed;
             Resistant = (float)(Math.Atan((double)nest.GrowthProperties.resistant * Level / 100) / Math.PI * 2);
@@ -277,7 +277,7 @@ namespace IANTLibrary
         public void IceEffect(IceBullet bullet)
         {
             float maxDuration = 1f * bullet.ElementLevel * (1 - Resistant); ;
-            float maxSlowDownRation = 2 * bullet.ElementLevel * (1 - Resistant); ;
+            float maxSlowDownRation = 1.3f * bullet.ElementLevel * (1 - Resistant); ;
             if(IceEffectDuration + bullet.EffectDuration > maxDuration)
             {
                 IceEffectDuration = Math.Max(IceEffectDuration, maxDuration);
@@ -314,7 +314,7 @@ namespace IANTLibrary
         public void PoisonEffect(PoisonBullet bullet)
         {
             float maxDuration = 5f * bullet.ElementLevel * (1 - Resistant); ;
-            float maxPoison = 2 * bullet.Poison * (1 - Resistant); ;
+            float maxPoison = 3 * bullet.ElementLevel * (1 - Resistant); ;
             if (PoisonEffectDuration + bullet.EffectDuration > maxDuration)
             {
                 PoisonEffectDuration = Math.Max(PoisonEffectDuration, maxDuration);

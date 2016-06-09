@@ -16,7 +16,11 @@ namespace IANTServer
             operationTable = new Dictionary<OperationCode, OperationHandler>()
             {
                 { OperationCode.GetConfigurations, new GetConfigurationsHandler(peer) },
-                { OperationCode.Login, new LoginHandler(peer) }
+                { OperationCode.Login, new LoginHandler(peer) },
+                { OperationCode.TakeCake, new TakeCakeHandler(peer) },
+                { OperationCode.UpgradeNest, new UpgradeNestHandler(peer) },
+                { OperationCode.StartGame, new StartGameHandler(peer) },
+                { OperationCode.GameOver, new GameOverHandler(peer) }
             };
         }
 

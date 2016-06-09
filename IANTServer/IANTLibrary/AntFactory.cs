@@ -33,7 +33,7 @@ namespace IANTLibrary
         public virtual Ant InstantiateNewAnt()
         {
             totalAntCount++;
-            if(totalAntCount % (game.AntNumber + nest.GrowthProperties.number * game.Wave / 20) == 0)
+            if(totalAntCount % (game.AntNumber + nest.GrowthProperties.population * game.Wave / 20) == 0)
             {
                 antPrefab.LevelUp();
                 game.Wave += 1;
@@ -51,7 +51,7 @@ namespace IANTLibrary
             antDictionary.Remove(ant.ID);
             if (ant.IsTakingFood)
                 ant.ReleaseFood(foodFactory);
-            while(antDictionary.Count < game.AntNumber + nest.GrowthProperties.number * game.Wave / 20)
+            while(antDictionary.Count < game.AntNumber + nest.GrowthProperties.population * game.Wave / 20)
                 InstantiateNewAnt();
         }
         public List<FormationInfo> GetFormationInfo(Ant criticalAnt)

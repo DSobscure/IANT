@@ -5,26 +5,22 @@ using System.Text;
 
 namespace IANTLibrary
 {
-    public class NestLevelFoodTable
+    public static class NestLevelFoodTable
     {
-        private List<int> foodTable;
-        public NestLevelFoodTable()
+        private static List<int> foodTable;
+        static NestLevelFoodTable()
         {
             foodTable = new List<int>()
             {
-                6,
+                10,
                 30,
-                120,
+                100,
                 360,
-                720,
-                1000
+                1000,
+                3000
             };
         }
-        public NestLevelFoodTable(List<int> foodTable)
-        {
-            this.foodTable = foodTable;
-        }
-        public int FoodForUpgrade(int level)
+        public static int FoodForUpgrade(int level)
         {
             if (level > 0 && level < foodTable.Count + 1)
             {

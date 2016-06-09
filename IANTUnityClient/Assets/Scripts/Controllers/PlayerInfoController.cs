@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine.UI;
 using IANTLibrary;
+using System.Collections.Generic;
 
 public class PlayerInfoController : MonoBehaviour
 {
@@ -15,35 +16,68 @@ public class PlayerInfoController : MonoBehaviour
     private Text cakeCountText;
     [SerializeField]
     private Image profilePhoto;
+    [SerializeField]
+    private Text expText;
 
     void Start()
     {
         UpdatePlayerInfo(IANTGame.Player);
+        IANTGame.OnProfileChange += OnProfileChangeAction;
+        IANTGame.OnProfilePhotoChange += OnProfilePhotoChangeAction;
+        IANTGame.Player.OnCakeCountChange += OnCakeCountChangeAction;
+        IANTGame.Player.OnLevelChange += OnLevelChangeAction;
+        IANTGame.Player.OnEXPChange += OnEXPChangeAction;
+        experiencePointsSlider.onValueChanged.AddListener((value) => 
+        {
+            expText.text = string.Format("{0}/{1}", value, experiencePointsSlider.maxValue);
+        });
+    }
+    void OnDestroy()
+    {
+        IANTGame.OnProfileChange -= OnProfileChangeAction;
+        IANTGame.OnProfilePhotoChange -= OnProfilePhotoChangeAction;
+        IANTGame.Player.OnCakeCountChange -= OnCakeCountChangeAction;
+        IANTGame.Player.OnLevelChange -= OnLevelChangeAction;
+        IANTGame.Player.OnEXPChange -= OnEXPChangeAction;
     }
 
     public void UpdatePlayerInfo(Player player)
     {
         if(player != null)
         {
-            levelText.text = player.Level.ToString();
-            experiencePointsSlider.maxValue = player.EXP;
-            experiencePointsSlider.value = player.EXP;
-            if (player.FoodInfos.Count > 0)
-                cakeCountText.text = player.FoodInfos.First(x => x.food is Cake).count.ToString();
-            else
-                cakeCountText.text = "0";
+            int remainedEXP;
+            int level = LevelEXPTable.GetLevel(player.EXP, out remainedEXP);
+            int maxEXP = LevelEXPTable.EXPForUpgrade(player.Level);
+            levelText.text = level.ToString();
+            experiencePointsSlider.maxValue = maxEXP;
+            experiencePointsSlider.value = remainedEXP;
+            expText.text = string.Format("{0}/{1}", remainedEXP, maxEXP);
+            cakeCountText.text = player.CakeCount.ToString();
+            OnProfilePhotoChangeAction(IANTGame.ProfilePhoto);
+            OnProfileChangeAction(IANTGame.ProfileResult);
         }
     }
-
-    void FixedUpdate()
+    private void OnProfilePhotoChangeAction(Texture2D photo)
     {
-        if(profilePhoto.sprite == null && IANTGame.ProfilePicture != null)
-        {
-            profilePhoto.sprite = Sprite.Create(IANTGame.ProfilePicture, new Rect(0, 0, 50f, 50f), new Vector2(0, 0));
-        }
-        if(IANTGame.ProfileResult != null && IANTGame.ProfileResult.ContainsKey("name"))
-        {
-            nameText.text = (string)IANTGame.ProfileResult["name"];
-        }
+        if(photo != null)
+            profilePhoto.sprite = Sprite.Create(photo, new Rect(0, 0, 50f, 50f), new Vector2(0, 0));
+    }
+    private void OnProfileChangeAction(IDictionary<string,object> profile)
+    {
+        if(profile != null)
+            nameText.text = (string)profile["name"];
+    }
+    private void OnCakeCountChangeAction(int number)
+    {
+        cakeCountText.text = number.ToString();
+    }
+    private void OnLevelChangeAction(int level)
+    {
+        levelText.text = level.ToString();
+        experiencePointsSlider.maxValue = LevelEXPTable.EXPForUpgrade(level);
+    }
+    private void OnEXPChangeAction(int exp)
+    {
+        experiencePointsSlider.value = exp;
     }
 }

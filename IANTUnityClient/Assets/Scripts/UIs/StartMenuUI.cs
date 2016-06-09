@@ -12,6 +12,6 @@ public class StartMenuUI : MonoBehaviour
     public void LoadedConfigurations()
     {
         resultText.text = "已載入遊戲設定";
-        testGameButton.SetActive(true);
+        //testGameButton.SetActive(true);
     }
 }

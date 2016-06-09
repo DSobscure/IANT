@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="IANTServer.Application" Collapsed="true">
+    <Position X="3.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAACAAIAABAAAAABAAAAApAAIAEEAAAAAEAAAA=</HashCode>
+      <FileName>Application.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="database" />
+      <Field Name="Log" />
+      <Field Name="playerManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IANTServer.MySQLDatabase" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAKQAAQAAAAABAIAAAAAAAAAAAAAAABAAEAA=</HashCode>
+      <FileName>MySQLDatabase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="IANTServer.OperationHandler" Collapsed="true">
+    <Position X="6.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAIAAAAAAAAAAAAABAgAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>OperationHandler.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="peer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IANTServer.LoginHandler" Collapsed="true">
+    <Position X="6.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>OperationHandlers\LoginHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IANTServer.OperationManager" Collapsed="true">
+    <Position X="3.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>OperationManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="peer" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="operationTable" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="IANTServer.Peer" Collapsed="true">
+    <Position X="6.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAABAAAAAAAAAAABAABAQAAAAAABAA=</HashCode>
+      <FileName>Peer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="operationManager" />
+      <Field Name="player" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IANTServer.PlayerManager" Collapsed="true">
+    <Position X="6.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAIRAQAIAAAAA=</HashCode>
+      <FileName>PlayerManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="playerConnectionTable" />
+      <Field Name="players" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="IANTLibrary.Player" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="IANTServer.IDatabase" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAQAAAAAAAAAAIAAAAAAAAAAAAAAABAAEAA=</HashCode>
+      <FileName>IDatabase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ExitGames.Logging.ILogger" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Microsoft JhengHei UI" Size="9" />
+</ClassDiagram>

@@ -3,7 +3,8 @@ namespace Managers
 {
     public class ActionManager
     {
-        public AuthenticateActionManager AuthenticateActionManager = new AuthenticateActionManager();
-        public FetchDataActionManager FetchDataActionManager = new FetchDataActionManager();
+        public readonly AuthenticateActionManager AuthenticateActionManager = new AuthenticateActionManager();
+        public readonly FetchDataActionManager FetchDataActionManager = new FetchDataActionManager();
+        public readonly OperationManager OperationManager = new OperationManager();
     }
 }

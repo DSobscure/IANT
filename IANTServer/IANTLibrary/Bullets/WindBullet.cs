@@ -24,14 +24,14 @@ namespace IANTLibrary.Bullets
         {
             Rotation += accuracy * (Convert.ToSingle(Math.Atan2(FocusTarget.PositionY - PositionY, FocusTarget.PositionX - PositionX) * 180.0 / Math.PI) - Rotation);
             accumulativeDamage += ElementLevel * deltaTime;
-            Speed += ElementLevel * deltaTime * 80;
+            Speed += ElementLevel * deltaTime * 120;
             accuracy = Math.Min(1f, accuracy + deltaTime/1.2f);
         }
 
         public override void Hit(Ant ant)
         {
+            accumulativeDamage = Math.Min(accumulativeDamage, ElementLevel);
             Damage = (int)(Damage * accumulativeDamage);
-            Damage = Math.Min(ElementLevel * 100, Damage);
             base.Hit(ant);
         }
     }

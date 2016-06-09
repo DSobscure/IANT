@@ -14,7 +14,7 @@ namespace IANTLibrary.Bullets
         public IceBullet(BulletProperties properties, Tower tower, int elementLevel) : base(properties, tower)
         {
             ElementLevel = elementLevel;
-            SlowDownRatio = elementLevel * 2;
+            SlowDownRatio = elementLevel * 0.2f;
             EffectDuration = elementLevel / 3f;
         }
 

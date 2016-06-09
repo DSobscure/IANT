@@ -77,8 +77,12 @@
     <Compile Include="IDatabase.cs" />
     <Compile Include="MySQLDatabase.cs" />
     <Compile Include="OperationHandler.cs" />
+    <Compile Include="OperationHandlers\GameOverHandler.cs" />
     <Compile Include="OperationHandlers\GetConfigurationsHandler.cs" />
     <Compile Include="OperationHandlers\LoginHandler.cs" />
+    <Compile Include="OperationHandlers\StartGameHandler.cs" />
+    <Compile Include="OperationHandlers\TakeCakeHandler.cs" />
+    <Compile Include="OperationHandlers\UpgradeNestHandler.cs" />
     <Compile Include="OperationManager.cs" />
     <Compile Include="Peer.cs" />
     <Compile Include="PlayerManager.cs" />

@@ -68,11 +68,18 @@ namespace IANTLibrary
 
     public struct AntGrowthProperties
     {
+        public int Level
+        {
+            get
+            {
+                return duration + speed + resistant + sensitivity + population + 1;
+            }
+        }
         public int duration;
         public int speed;
         public int resistant;
-        public int sensorDistance;
-        public int number;
+        public int sensitivity;
+        public int population;
     }
 
     public class Nest
@@ -87,7 +94,18 @@ namespace IANTLibrary
         public float[,] formationCakeWeight;
         public float[,] formationWeight;
 
-        public AntGrowthProperties GrowthProperties { get; protected set; }
+        protected AntGrowthProperties growthProperties;
+        public AntGrowthProperties GrowthProperties
+        {
+            get { return growthProperties; }
+            set
+            {
+                growthProperties = value;
+                OnGrowthPropertiesChange?.Invoke(value);
+            }
+        }
+
+        public Action<AntGrowthProperties> OnGrowthPropertiesChange;
 
         public Nest(AntGrowthProperties growthProperties)
         {
@@ -132,7 +150,7 @@ namespace IANTLibrary
             {
                 annelingFactor *= 0.2;
             }
-            int sensorDistance = 2;
+            int sensorDistance = 2 + GrowthProperties.sensitivity;
             int antBlockX = Convert.ToInt32(ant.PositionX / 10) + 48;
             int antBlockY = Convert.ToInt32(ant.PositionY / 10) + 30;
             int formationX, formationY;
@@ -212,7 +230,7 @@ namespace IANTLibrary
             {
                 int formationX, formationY;
                 GetFormationIndex(ant, out formationX, out formationY);
-                int sensorDistance = 4;
+                int sensorDistance = 2;
                 for (int x = -sensorDistance; x <= sensorDistance; x++)
                 {
                     if (formationX + x < 0 || formationX + x >= 96)
@@ -231,6 +249,38 @@ namespace IANTLibrary
                         }
                     }
                 }
+            }
+        }
+        public bool UpgradeNest(AntGrowthDirection direction, Player player)
+        {
+            if(player.UseCake(NestLevelFoodTable.FoodForUpgrade(GrowthProperties.Level)))
+            {
+                switch (direction)
+                {
+                    case AntGrowthDirection.Duration:
+                        growthProperties.duration++;
+                        break;
+                    case AntGrowthDirection.Speed:
+                        growthProperties.speed++;
+                        break;
+                    case AntGrowthDirection.Resistant:
+                        growthProperties.resistant++;
+                        break;
+                    case AntGrowthDirection.Sensitivity:
+                        growthProperties.sensitivity++;
+                        break;
+                    case AntGrowthDirection.Population:
+                        growthProperties.population++;
+                        break;
+                    default:
+                        return false;
+                }
+                OnGrowthPropertiesChange?.Invoke(GrowthProperties);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

@@ -102,6 +102,13 @@ public class PhotonService : IPhotonPeerListener
     }
     public void SendOperation(IANTProtocol.OperationCode oprationCode, Dictionary<byte, object> parameter)
     {
-        peer.OpCustom((byte)oprationCode, parameter, true, 0, true);
+        if(peer.IsEncryptionAvailable)
+        {
+            peer.OpCustom((byte)oprationCode, parameter, true, 0, true);
+        }
+        else
+        {
+            DebugReturn(DebugLevel.ERROR, "communication still not establish encryption");
+        }
     }
 }

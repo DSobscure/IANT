@@ -1,9 +1,9 @@
-﻿using Photon.SocketServer;
-using System.Net;
-using System.IO;
-using IANTProtocol;
-using System.Collections.Generic;
+﻿using IANTProtocol;
+using Photon.SocketServer;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
 
 namespace IANTServer.OperationHandlers
 {
@@ -42,7 +42,15 @@ namespace IANTServer.OperationHandlers
                     {
                         { (byte)LoginResponseParameterCode.UniqueID, player.UniqueID },
                         { (byte)LoginResponseParameterCode.Level, player.Level },
-                        { (byte)LoginResponseParameterCode.EXP, player.EXP}
+                        { (byte)LoginResponseParameterCode.EXP, player.EXP},
+                        { (byte)LoginResponseParameterCode.LastTakeCakeTime, player.LastTakeCakeTime.ToBinary()},
+                        { (byte)LoginResponseParameterCode.CakeCount, player.CakeCount},
+                        { (byte)LoginResponseParameterCode.FirstNestDuration, player.Nests[0].GrowthProperties.duration},
+                        { (byte)LoginResponseParameterCode.FirstNestSpeed, player.Nests[0].GrowthProperties.speed},
+                        { (byte)LoginResponseParameterCode.FirstNestResistant, player.Nests[0].GrowthProperties.resistant},
+                        { (byte)LoginResponseParameterCode.FirstNestPopulation, player.Nests[0].GrowthProperties.population},
+                        { (byte)LoginResponseParameterCode.FirstNestSensitivity, player.Nests[0].GrowthProperties.sensitivity}
+
                     };
                     SendResponse(operationRequest.OperationCode, parameter);
                     return true;

@@ -47,7 +47,6 @@ namespace IANTServer
             {
                 ReturnCode = (short)StatusCode.Correct
             };
-            Application.Log.InfoFormat("{0} 登入成功", peer.Guid);
             peer.SendOperationResponse(response, new SendParameters());
         }
     }
