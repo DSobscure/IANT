@@ -10,13 +10,18 @@ namespace Managers
         public readonly SystemResponseManager SystemResponseManager = new SystemResponseManager();
         public readonly AuthenticationResponseManager AuthenticationResponseManager = new AuthenticationResponseManager();
         public readonly FetchDataResponseManager FetchDataResponseManager = new FetchDataResponseManager();
+        public readonly OperationResponseManager OperationResponseManager = new OperationResponseManager();
 
         public ResponseManager()
         {
             responseTable = new Dictionary<OperationCode, ResponseHandler>()
             {
                 { OperationCode.Login, new LoginResponseHandler() },
-                { OperationCode.GetConfigurations, new GetConfigurationsResponseHandler() }
+                { OperationCode.GetConfigurations, new GetConfigurationsResponseHandler() },
+                { OperationCode.TakeCake, new TakeCakeResponseHandler() },
+                { OperationCode.UpgradeNest, new UpgradeNestResponseHandler() },
+                { OperationCode.StartGame, new StartGameResponseHandler() },
+                { OperationCode.GameOver, new GameOverResponseHandler() }
             };
         }
 

@@ -63,6 +63,7 @@ namespace IANTLibrary
         public float FoodPlatePositionY { get { return configuration.foodPlatePositionY; } }
         public float FoodPlateRadius { get { return configuration.foodPlateRadius; } }
         public int AntNumber { get { return configuration.antNumber; } }
+        public bool IsGameOver { get; protected set; }
 
         public event Action<int> OnWaveChange;
         public event Action<int> OnScoreChange;
@@ -72,8 +73,13 @@ namespace IANTLibrary
         public Game(GameConfiguration configuration)
         {
             this.configuration = configuration;
-            Score = 0;
             Money = configuration.startMoney;
+            Score = 0;
+            IsGameOver = false;
+        }
+        public Game()
+        {
+            Score = 0;
         }
         public void SetFoods(Food food, int count)
         {
@@ -90,7 +96,16 @@ namespace IANTLibrary
         }
         public void GameOver()
         {
-            OnGameOver?.Invoke();
+            if(!IsGameOver)
+            {
+                IsGameOver = true;
+                OnGameOver?.Invoke();
+            }
+        }
+        public virtual void BindConfiguration(GameConfiguration configuration)
+        {
+            this.configuration = configuration;
+            Money = configuration.startMoney;
         }
     }
 }

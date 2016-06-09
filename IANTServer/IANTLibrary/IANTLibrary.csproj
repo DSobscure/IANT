@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Ant.cs" />
     <Compile Include="AntFactory.cs" />
+    <Compile Include="AntGrowthDirection.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Bullets\FireBullet.cs" />
     <Compile Include="Bullets\IceBullet.cs" />

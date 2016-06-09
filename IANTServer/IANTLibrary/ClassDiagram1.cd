@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="IANTLibrary.Ant" Collapsed="true">
+    <Position X="3.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAIAAAAAAICAgiAggAIAEAABYAAAIAARAAAgAAAAAAA=</HashCode>
+      <FileName>Ant.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="properties" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IANTLibrary.AntFactory" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAGAFAAAAAAAAQAAAEAAAAAgAAAAAAAA=</HashCode>
+      <FileName>AntFactory.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="antPrefab" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="antDictionary" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="IANTLibrary.Cake" Collapsed="true">
+    <Position X="6.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Cake.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IANTLibrary.Food" Collapsed="true">
+    <Position X="6.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Food.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IANTLibrary.FoodFactory" Collapsed="true">
+    <Position X="6.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAkAAAAAAAgAAQAEEABAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>FoodFactory.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="foodList" />
+      <Field Name="storedFoodList" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="IANTLibrary.Game" Collapsed="true">
+    <Position X="6.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQEQAgAAAAAAAAAAAAAAAAAgAACBAAAIAAAAAAAAEAA=</HashCode>
+      <FileName>Game.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="configuration" />
+      <Property Name="FoodFactory" />
+      <Property Name="AntFactory" />
+      <Property Name="TowerFactory" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IANTLibrary.Map" Collapsed="true">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Map.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IANTLibrary.Player" Collapsed="true">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IANTLibrary.Tower" Collapsed="true">
+    <Position X="3.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIIAAAAQAAAAAAAoAAQABAACAAAEIAAAgAAEAAwAAIA=</HashCode>
+      <FileName>Tower.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="properties" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="targetsInRange" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="IANTLibrary.TowerFactory" Collapsed="true">
+    <Position X="3.5" Y="5.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAgAABAAIAAAAAAACAARAAwAAAAAAAA=</HashCode>
+      <FileName>TowerFactory.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="towerPerfab" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="towerDictionary" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Struct Name="IANTLibrary.AntProperties" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAABEAAAAAAABAAAAAAAI=</HashCode>
+      <FileName>Ant.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IANTLibrary.GameConfiguration" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAGAAAAAAAAAAQAAAAABQAAAAAAAAAAA=</HashCode>
+      <FileName>Game.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IANTLibrary.TowerProperties" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Tower.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Microsoft JhengHei UI" Size="9" />
+</ClassDiagram>

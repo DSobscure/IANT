@@ -5,10 +5,10 @@ using System.Text;
 
 namespace IANTLibrary
 {
-    public class LevelEXPTable
+    public static class LevelEXPTable
     {
-        private List<int> expTable;
-        public LevelEXPTable()
+        private static List<int> expTable;
+        static LevelEXPTable()
         {
             expTable = new List<int>()
             {
@@ -20,11 +20,7 @@ namespace IANTLibrary
                 10000
             };
         }
-        public LevelEXPTable(List<int> expTable)
-        {
-            this.expTable = expTable;
-        }
-        public int EXPForUpgrade(int level)
+        public static int EXPForUpgrade(int level)
         {
             if(level > 0 && level < expTable.Count + 1)
             {
@@ -35,7 +31,7 @@ namespace IANTLibrary
                 return int.MaxValue;
             }
         }
-        public int GetLevel(int exp, out int remainedEXP)
+        public static int GetLevel(int exp, out int remainedEXP)
         {
             int level = 1;
             if (exp >= 0)
@@ -56,7 +52,7 @@ namespace IANTLibrary
             remainedEXP = exp;
             return level;
         }
-        public bool IsUpgrade(int level, int exp)
+        public static bool IsUpgrade(int level, int exp)
         {
             if (level > 0 && level < expTable.Count + 1)
             {

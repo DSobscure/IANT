@@ -83,7 +83,7 @@ namespace IANTServer
             }
         }
 
-        public string[] ReadDataByUniqueID(int uniqueID, string[] columns, string table)
+        public string[] ReadDataByUniqueID(int uniqueID, string[] columns, string table, string joinCondition = "")
         {
             try
             {
@@ -97,6 +97,10 @@ namespace IANTServer
                     sqlText.Append("," + columns[index]);
                 }
                 sqlText.Append(" FROM " + table + " WHERE UniqueID=@uniqueID");
+                if(joinCondition != "")
+                {
+                    sqlText.Append(" and " + joinCondition);
+                }
                 using (MySqlCommand command = new MySqlCommand(sqlText.ToString(), connection))
                 {
                     command.Parameters.AddWithValue("@uniqueID", uniqueID);
@@ -169,7 +173,83 @@ namespace IANTServer
             }
         }
 
-        public object[] GetDataByUniqueID(int uniqueID, string[] requestItems, TypeCode[] requestTypes, string table)
+        public bool UpdataDataByUniqueID(int uniqueID, string[] columns, object[] values, string table)
+        {
+            try
+            {
+                QueryStartTask();
+
+                StringBuilder sqlText = new StringBuilder();
+                sqlText.Append("UPDATE " + table + " SET " + columns[0] + "=@updateValue0");
+                int updateNumber = columns.Length;
+                for (int index1 = 1; index1 < updateNumber; index1++)
+                {
+                    sqlText.Append("," + columns[index1] + "=@updateValue" + index1.ToString());
+                }
+                sqlText.Append(" where UniqueID=@uniqueID");
+                using (MySqlCommand cmd = new MySqlCommand(sqlText.ToString(), connection))
+                {
+                    for (int index1 = 0; index1 < updateNumber; index1++)
+                    {
+                        cmd.Parameters.AddWithValue("@updateValue" + index1.ToString(), values[index1]);
+                    }
+                    cmd.Parameters.AddWithValue("@uniqueID", uniqueID);
+                    if (cmd.ExecuteNonQuery() > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                QueryEndTask();
+            }
+        }
+
+        public bool UpdataDataByID(int uniqueID, string[] columns, object[] values, string table, string IDName)
+        {
+            try
+            {
+                QueryStartTask();
+
+                StringBuilder sqlText = new StringBuilder();
+                sqlText.Append("UPDATE " + table + " SET " + columns[0] + "=@updateValue0");
+                int updateNumber = columns.Length;
+                for (int index1 = 1; index1 < updateNumber; index1++)
+                {
+                    sqlText.Append("," + columns[index1] + "=@updateValue" + index1.ToString());
+                }
+                sqlText.Append(" where "+ IDName + "=@IDName");
+                using (MySqlCommand cmd = new MySqlCommand(sqlText.ToString(), connection))
+                {
+                    for (int index1 = 0; index1 < updateNumber; index1++)
+                    {
+                        cmd.Parameters.AddWithValue("@updateValue" + index1.ToString(), values[index1]);
+                    }
+                    cmd.Parameters.AddWithValue("@IDName", uniqueID);
+                    if (cmd.ExecuteNonQuery() > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                QueryEndTask();
+            }
+        }
+
+        public object[] GetDataByUniqueID(int uniqueID, string[] requestItems, TypeCode[] requestTypes, string table, string joinCondition = "")
         {
             try
             {
@@ -183,6 +263,10 @@ namespace IANTServer
                     sqlText.Append("," + requestItems[index1]);
                 }
                 sqlText.Append(" FROM " + table + " WHERE UniqueID=@uniqueID");
+                if (joinCondition != "")
+                {
+                    sqlText.Append(" and " + joinCondition);
+                }
                 using (MySqlCommand cmd = new MySqlCommand(sqlText.ToString(), connection))
                 {
                     cmd.Parameters.AddWithValue("@uniqueID", uniqueID);
@@ -213,6 +297,9 @@ namespace IANTServer
                                             break;
                                         case TypeCode.Int64:
                                             returnValue[index1] = reader.GetInt64(index1);
+                                            break;
+                                        case TypeCode.DateTime:
+                                            returnValue[index1] = reader.GetDateTime(index1);
                                             break;
                                     }
                                 }
@@ -259,6 +346,34 @@ namespace IANTServer
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                QueryEndTask();
+            }
+        }
+
+        public bool Register(long facebookID)
+        {
+            try
+            {
+                QueryStartTask();
+                StringBuilder sqlText = new StringBuilder();
+                sqlText.Append("INSERT INTO player (FacebookID,Level,EXP) values (@facebookID,1,0);");
+                sqlText.Append("INSERT INTO nest (PlayerID) SELECT LAST_INSERT_ID();");
+                using (MySqlCommand cmd = new MySqlCommand(sqlText.ToString(), connection))
+                {
+                    cmd.Parameters.AddWithValue("@facebookID", facebookID);
+                    if (cmd.ExecuteNonQuery() > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
             catch (Exception ex)
             {

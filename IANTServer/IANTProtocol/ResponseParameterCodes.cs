@@ -13,6 +13,36 @@ namespace IANTProtocol
     {
         UniqueID,
         Level,
+        EXP,
+        LastTakeCakeTime,
+        CakeCount,
+        FirstNestDuration,
+        FirstNestSpeed,
+        FirstNestResistant,
+        FirstNestPopulation,
+        FirstNestSensitivity
+    }
+    public enum TakeCakeResponseParameterCode : byte
+    {
+        LastTakeCakeTime,
+        CakeCount
+    }
+    public enum UpgradeNestResponseParameterCode : byte
+    {
+        CakeCount,
+        Duration,
+        Speed,
+        Resistant,
+        Population,
+        Sensitivity
+    }
+    public enum StartGameResponseParameterCode : byte
+    {
+        UsedCakeNumber
+    }
+    public enum GameOverResponseParameterCode : byte
+    {
+        Level,
         EXP
     }
 }

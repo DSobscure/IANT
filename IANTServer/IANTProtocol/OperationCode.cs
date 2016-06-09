@@ -3,6 +3,10 @@
     public enum OperationCode : byte
     {
         GetConfigurations,
-        Login
+        Login,
+        TakeCake,
+        UpgradeNest,
+        StartGame,
+        GameOver
     }
 }
