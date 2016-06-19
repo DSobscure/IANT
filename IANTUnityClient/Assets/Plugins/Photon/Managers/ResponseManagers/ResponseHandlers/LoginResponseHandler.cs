@@ -21,6 +21,11 @@ public class LoginResponseHandler : ResponseHandler
             int resistant = (int)operationResponse.Parameters[(byte)LoginResponseParameterCode.FirstNestResistant];
             int population = (int)operationResponse.Parameters[(byte)LoginResponseParameterCode.FirstNestPopulation];
             int sensitivity = (int)operationResponse.Parameters[(byte)LoginResponseParameterCode.FirstNestSensitivity];
+            string distributionMap1 = (string)operationResponse.Parameters[(byte)LoginResponseParameterCode.FirstNestDistributionMap1];
+            string distributionMap2 = (string)operationResponse.Parameters[(byte)LoginResponseParameterCode.FirstNestDistributionMap2];
+            string distributionMap3 = (string)operationResponse.Parameters[(byte)LoginResponseParameterCode.FirstNestDistributionMap3];
+            string defenceDataString = (string)operationResponse.Parameters[(byte)LoginResponseParameterCode.DefenceDataString];
+            int usedDefenceBudget = (int)operationResponse.Parameters[(byte)LoginResponseParameterCode.UsedDefenceBudget];
 
             IANTGame.Player = new IANTLibrary.Player(uniqueID, new PlayerProperties
             {
@@ -46,8 +51,11 @@ public class LoginResponseHandler : ResponseHandler
                         sensitivity = sensitivity
                     })
                 },
-                lastTakeCakeTime = lastTakeCakeTime
+                lastTakeCakeTime = lastTakeCakeTime,
+                defenceDataString = defenceDataString,
+                usedDefenceBudget = usedDefenceBudget
             });
+            IANTGame.Player.Nests[0].Load3DistributionMap(distributionMap1, distributionMap2, distributionMap3);
             IANTGame.ResponseManager.AuthenticationResponseManager.CallLoginResponse();
             IANTGame.InformManager.SystemInformManager.CallDebugReturn("login successiful");
             return true;
@@ -65,7 +73,7 @@ public class LoginResponseHandler : ResponseHandler
         {
             return false;
         }
-        if (operationResponse.Parameters.Count != 10)
+        if (operationResponse.Parameters.Count != 15)
         {
             return false;
         }

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IANTLibrary", "IANTLibrary\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IANTProtocol", "IANTProtocol\IANTProtocol.csproj", "{05985406-AB6D-43FF-884D-006FE127EFC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworkLibrary", "NeuralNetworkLibrary\NeuralNetworkLibrary.csproj", "{A2870796-A366-4CCE-AAA8-3F2A3B34F563}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{05985406-AB6D-43FF-884D-006FE127EFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05985406-AB6D-43FF-884D-006FE127EFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05985406-AB6D-43FF-884D-006FE127EFC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2870796-A366-4CCE-AAA8-3F2A3B34F563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2870796-A366-4CCE-AAA8-3F2A3B34F563}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2870796-A366-4CCE-AAA8-3F2A3B34F563}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2870796-A366-4CCE-AAA8-3F2A3B34F563}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

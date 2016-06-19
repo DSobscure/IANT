@@ -24,6 +24,7 @@ namespace IANTServer.OperationHandlers
                     {
                         { (byte)StartGameResponseParameterCode.UsedCakeNumber, usedCakeNumber }
                     });
+                    Application.ServerInstance.SavePlayerCakeCount(peer.Player.UniqueID, peer.Player.CakeCount);
                     return true;
                 }
                 else

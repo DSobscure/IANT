@@ -15,7 +15,7 @@ namespace IANTLibrary.Bullets
         {
             ElementLevel = elementLevel;
             ParalysisProbability = Math.Pow(0.1, 1 / (double)elementLevel);
-            EffectDuration = elementLevel * 0.05f;
+            EffectDuration = elementLevel * 0.1f;
         }
 
         public override void Hit(Ant ant)

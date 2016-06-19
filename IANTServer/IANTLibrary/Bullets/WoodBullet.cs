@@ -13,7 +13,8 @@ namespace IANTLibrary.Bullets
 
         public override void Hit(Ant ant)
         {
-            Damage *= -1;
+            ant.Heal(Damage);
+            Damage = 0;
             base.Hit(ant);
         }
     }

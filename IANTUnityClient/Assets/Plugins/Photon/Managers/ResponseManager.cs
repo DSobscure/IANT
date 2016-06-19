@@ -21,7 +21,12 @@ namespace Managers
                 { OperationCode.TakeCake, new TakeCakeResponseHandler() },
                 { OperationCode.UpgradeNest, new UpgradeNestResponseHandler() },
                 { OperationCode.StartGame, new StartGameResponseHandler() },
-                { OperationCode.GameOver, new GameOverResponseHandler() }
+                { OperationCode.GameOver, new GameOverResponseHandler() },
+                { OperationCode.GetChallengePlayerList, new GetChallengePlayerListResponseHandler() },
+                { OperationCode.ChallengeGame, new StartChallengeGameResponseHandler() },
+                { OperationCode.SetDefence, new SetDefenceResponseHandler() },
+                { OperationCode.GetHarvestPlayerList, new GetHarvestPlayerListResponseHandler() },
+                { OperationCode.HarvestGame, new StartHarvestGameResponseHandler() }
             };
         }
 

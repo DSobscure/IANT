@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
+using IANTServer.OperationHandlers;
+using IANTLibrary;
 
 namespace IANTServer
 {
@@ -19,7 +17,12 @@ namespace IANTServer
         bool UpdataDataByID(int uniqueID, string[] columns, object[] values, string table, string IDName);
         bool DeleteDataByUniqueID(int uniqueID, string table);
         bool ContainsPlayer(long facebookID, out int uniqueID);
-
         bool Register(long facebookID);
+        Dictionary<long, ChallengePlayerInfo> FetchRandomNPlayerInfo(int n);
+        ChallengePlayerInfo FetchPlayerInfoWithFacebookID(long facebookID);
+        Nest GetNest(long facebookID);
+        string GetDefenceDataString(long facebookID);
+        Dictionary<long, HarvestPlayerInfo> FetchRandomNHarvestPlayerInfo(int n);
+        HarvestPlayerInfo FetchHarvestPlayerInfoWithFacebookID(long facebookID);
     }
 }

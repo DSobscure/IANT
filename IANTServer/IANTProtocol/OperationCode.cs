@@ -7,6 +7,14 @@
         TakeCake,
         UpgradeNest,
         StartGame,
-        GameOver
+        GameOver,
+        GetChallengePlayerList,
+        ChallengeGame,
+        ChallengeGameOver,
+        SetDefence,
+        GetHarvestPlayerList,
+        HarvestGame,
+        HarvestGameOver,
+        PlayerMessage,
     }
 }

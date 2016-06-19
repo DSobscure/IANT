@@ -1,6 +1,7 @@
 ﻿using System;
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
+using Managers;
 
 public class PhotonService : IPhotonPeerListener
 {
@@ -20,7 +21,7 @@ public class PhotonService : IPhotonPeerListener
 
     public void OnEvent(EventData eventData)
     {
-        throw new NotImplementedException();
+        IANTGame.BroadcastManager.Operate(eventData);
     }
 
     public void OnOperationResponse(OperationResponse operationResponse)

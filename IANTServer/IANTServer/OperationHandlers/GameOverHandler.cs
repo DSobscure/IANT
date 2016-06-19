@@ -10,14 +10,18 @@ namespace IANTServer.OperationHandlers
         { }
         public override bool CheckParameter(OperationRequest operationRequest)
         {
-            return operationRequest.Parameters.Count == 1;
+            return operationRequest.Parameters.Count == 4;
         }
         public override bool Handle(OperationRequest operationRequest)
         {
             if (base.Handle(operationRequest))
             {
                 int finalWave = (int)operationRequest.Parameters[(byte)GameOverParameterCode.FinalWaveNumber];
+                string distributionMap1 = (string)operationRequest.Parameters[(byte)GameOverParameterCode.NestDistributionMap1];
+                string distributionMap2 = (string)operationRequest.Parameters[(byte)GameOverParameterCode.NestDistributionMap2];
+                string distributionMap3 = (string)operationRequest.Parameters[(byte)GameOverParameterCode.NestDistributionMap3];
                 peer.Player.EXP += finalWave;
+                peer.Player.Nests[0].Load3DistributionMap(distributionMap1, distributionMap2, distributionMap3);
                 SendResponse(operationRequest.OperationCode, new Dictionary<byte, object>()
                 {
                     { (byte)GameOverResponseParameterCode.Level, peer.Player.Level },

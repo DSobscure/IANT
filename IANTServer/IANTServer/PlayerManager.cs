@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using IANTLibrary;
+using Photon.SocketServer;
+using IANTProtocol;
 
 namespace IANTServer
 {
@@ -72,6 +74,30 @@ namespace IANTServer
             else
             {
                 return true;
+            }
+        }
+        public bool Harvested(int uniqueID, int harvestNumber)
+        {
+            if(players.ContainsKey(uniqueID))
+            {
+                players[uniqueID].UseCake(Math.Min(harvestNumber, players[uniqueID].CakeCount));
+                Application.ServerInstance.SavePlayerCakeCount(uniqueID, players[uniqueID].CakeCount);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public void InformCakeNumberChange(int uniqueID, int cakeCount)
+        {
+            if (playerConnectionTable.ContainsKey(uniqueID))
+            {
+                EventData eventData = new EventData((byte)BroadcastCode.CakeNumberChange, new Dictionary<byte, object>()
+                {
+                    {(byte)CakeNumberChangeBroadcastParameterCode.CakeNumber, cakeCount}
+                });
+                playerConnectionTable[uniqueID].SendEvent(eventData, new SendParameters());
             }
         }
     }

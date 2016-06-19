@@ -42,7 +42,7 @@ public class AntController : MonoBehaviour, IController
     {
         float newXScale = 0.5f * (hp / (float)ant.MaxHP);
         transform.GetChild(0).localScale = new Vector3(newXScale, 0.1f, 1);
-        transform.GetChild(0).localPosition = new Vector3(-0.03f - (0.5f - newXScale)/2, 0.3f, 0);
+        transform.GetChild(0).localPosition = new Vector3(-0.03f - (0.5f - newXScale) / 2, 0.3f, 0);
     }
     public void RegisterEvents()
     {
@@ -68,8 +68,9 @@ public class AntController : MonoBehaviour, IController
     }
     void FixedUpdate()
     {
-        ant.Move();
-        Rigidbody2D rigidbody = gameObject.GetComponent<Rigidbody2D>();
+        counter++;
+        if(counter%4 == 0)
+            ant.Move();
     }
     void Update()
     {
@@ -89,6 +90,10 @@ public class AntController : MonoBehaviour, IController
         else
         {
             gameObject.GetComponent<SpriteRenderer>().color = Color.black;
+        }
+        if (ant.PositionX > 480 || ant.PositionX < -480 || ant.PositionY > 300 || ant.PositionY < -300)
+        {
+            gameObject.GetComponent<Rigidbody2D>().MovePosition(new Vector2(0, 0));
         }
     }
 }

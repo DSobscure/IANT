@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IANTLibrary;
+using IANTServer.OperationHandlers;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Text;
 
 namespace IANTServer
 {
@@ -382,6 +382,230 @@ namespace IANTServer
             finally
             {
                 QueryEndTask();
+            }
+        }
+
+        public Dictionary<long,ChallengePlayerInfo> FetchRandomNPlayerInfo(int n)
+        {
+            //the sql is slow but that's ok
+            try
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT FacebookID, Level, (Duration+Speed+Resistant+Population+Sensitivity+1)as NestLevel FROM player,nest WHERE player.UniqueID = nest.PlayerID ORDER BY RAND() LIMIT @N", connection))
+                {
+                    cmd.Parameters.AddWithValue("@N", n);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Dictionary<long, ChallengePlayerInfo> infos = new Dictionary<long, ChallengePlayerInfo>();
+                        for (int i = 0; i < n; i++)
+                        {
+                            if (reader.Read())
+                            {
+                                infos.Add(reader.GetInt64(0), new ChallengePlayerInfo
+                                {
+                                    facebookID = reader.GetInt64(0),
+                                    level = reader.GetInt32(1),
+                                    nestLevel = reader.GetInt32(2)
+                                });
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        return infos;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+        public ChallengePlayerInfo FetchPlayerInfoWithFacebookID(long facebookID)
+        {
+            try
+            {
+                ChallengePlayerInfo info = new ChallengePlayerInfo();
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT FacebookID, Level, (Duration+Speed+Resistant+Population+Sensitivity+1)as NestLevel FROM player,nest WHERE FacebookID = @fbid AND player.UniqueID = nest.PlayerID LIMIT 1", connection))
+                {
+                    cmd.Parameters.AddWithValue("@fbid", facebookID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            info.facebookID = reader.GetInt64(0);
+                            info.level = reader.GetInt32(1);
+                            info.nestLevel = reader.GetInt32(2);
+                        }
+                        return info;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+        public Nest GetNest(long facebookID)
+        {
+            try
+            {
+                Nest nest = null;
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT Duration,Speed,Resistant,Population,Sensitivity,DistributionMap1,DistributionMap2,DistributionMap3 FROM player,nest WHERE FacebookID = @fbid AND player.UniqueID = nest.PlayerID LIMIT 1", connection))
+                {
+                    cmd.Parameters.AddWithValue("@fbid", facebookID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            nest = new Nest(new AntGrowthProperties
+                            {
+                                duration = reader.GetInt32(0),
+                                speed = reader.GetInt32(1),
+                                resistant = reader.GetInt32(2),
+                                population = reader.GetInt32(3),
+                                sensitivity = reader.GetInt32(4)
+                            });
+                            nest.Load3DistributionMap(reader.GetString(5), reader.GetString(6), reader.GetString(7));
+                        }
+                        return nest;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+        public string GetDefenceDataString(long facebookID)
+        {
+            try
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT DefenceTowersDataString FROM player WHERE FacebookID = @fbid LIMIT 1", connection))
+                {
+                    cmd.Parameters.AddWithValue("@fbid", facebookID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read() && !reader.IsDBNull(0))
+                        {
+                            string dataString = reader.GetString(0);
+                            if (dataString[0] != '<')
+                                dataString = dataString.Substring(1);
+                            return dataString;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+        public Dictionary<long, HarvestPlayerInfo> FetchRandomNHarvestPlayerInfo(int n)
+        {
+            //the sql is slow but that's ok
+            try
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT FacebookID, Level, CakeCount FROM player ORDER BY RAND() LIMIT @N", connection))
+                {
+                    cmd.Parameters.AddWithValue("@N", n);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Dictionary<long, HarvestPlayerInfo> infos = new Dictionary<long, HarvestPlayerInfo>();
+                        for (int i = 0; i < n; i++)
+                        {
+                            if (reader.Read())
+                            {
+                                infos.Add(reader.GetInt64(0), new HarvestPlayerInfo
+                                {
+                                    facebookID = reader.GetInt64(0),
+                                    level = reader.GetInt32(1),
+                                    harvestableCakeNumber = reader.GetInt32(2)/2
+                                });
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        return infos;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+        public HarvestPlayerInfo FetchHarvestPlayerInfoWithFacebookID(long facebookID)
+        {
+            try
+            {
+                HarvestPlayerInfo info = new HarvestPlayerInfo();
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT FacebookID, Level, CakeCount FROM player WHERE FacebookID = @fbid LIMIT 1", connection))
+                {
+                    cmd.Parameters.AddWithValue("@fbid", facebookID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            info.facebookID = reader.GetInt64(0);
+                            info.level = reader.GetInt32(1);
+                            info.harvestableCakeNumber = reader.GetInt32(2)/2;
+                        }
+                        return info;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
             }
         }
     }

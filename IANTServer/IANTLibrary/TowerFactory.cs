@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace IANTLibrary
 {
@@ -71,6 +73,39 @@ namespace IANTLibrary
             else
             {
                 return false;
+            }
+        }
+        public void AimOnTarget(Ant ant)
+        {
+            foreach(Tower tower in towerDictionary.Values)
+            {
+                tower.AimOnTarget(ant);
+            }
+        }
+        public string SerializeTowers()
+        {
+            List<TowerProperties> towers = towerDictionary.Values.Select(x => x.Properties).ToList();
+            XmlSerializer serializer = new XmlSerializer(typeof(List<TowerProperties>));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                serializer.Serialize(ms, towers);
+                return Encoding.UTF8.GetString(ms.ToArray());
+            }
+        }
+        public void LoadTowers(string serializationString)
+        {
+            if(serializationString != null)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<TowerProperties>));
+                using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(serializationString)))
+                {
+                    List<TowerProperties> towers = serializer.Deserialize(ms) as List<TowerProperties>;
+                    foreach (TowerProperties properties in towers)
+                    {
+                        Tower tower = towerPerfab.Instantiate(properties);
+                        towerDictionary.Add(tower.UniqueID, tower);
+                    }
+                }
             }
         }
     }

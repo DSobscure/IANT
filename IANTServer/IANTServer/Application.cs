@@ -7,6 +7,7 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IANTServer.OperationHandlers;
 
 namespace IANTServer
 {
@@ -78,14 +79,14 @@ namespace IANTServer
             {
                 string[] requestItems = new string[]
                 {
-                    "Level","EXP","LastTakeCakeTime","CakeCount","Duration","Speed","Resistant","Population","Sensitivity"
+                    "Level","EXP","LastTakeCakeTime","CakeCount","Duration","Speed","Resistant","Population","Sensitivity","DistributionMap1","DistributionMap2","DistributionMap3","DefenceTowersDataString","UsedDefenceBudget"
                 };
                 TypeCode[] requestTypes = new TypeCode[]
                 {
-                    TypeCode.Int32, TypeCode.Int32, TypeCode.DateTime, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32
+                    TypeCode.Int32, TypeCode.Int32, TypeCode.DateTime, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32, TypeCode.Int32, TypeCode.String, TypeCode.String, TypeCode.String, TypeCode.String, TypeCode.Int32
                 };
                 object[] results = database.GetDataByUniqueID(uniqueID, requestItems, requestTypes, "player,nest", "player.UniqueID=nest.PlayerID");
-                return new ServerPlayer(uniqueID, new PlayerProperties
+                ServerPlayer player = new ServerPlayer(uniqueID, new PlayerProperties
                 {
                     facebookID = facebookID,
                     level = (int)results[0],
@@ -105,8 +106,19 @@ namespace IANTServer
                             sensitivity = (int)results[8]
                         })
                     },
-                    lastTakeCakeTime = (DateTime)results[2]
+                    lastTakeCakeTime = (DateTime)results[2],
+                    defenceDataString = (string)results[12],
+                    usedDefenceBudget = (int)results[13]
                 }, peer);
+                if(player.DefenceDataString != null && player.DefenceDataString[0] != '<')
+                {
+                    player.DefenceDataString = player.DefenceDataString.Substring(1);
+                }
+                if(!(results[9] == null || results[10] == null || results[11] == null))
+                {
+                    player.Nests[0].Load3DistributionMap((string)results[9], (string)results[10], (string)results[11]);
+                }
+                return player;
             }
             else
             {
@@ -139,19 +151,116 @@ namespace IANTServer
                 Log.ErrorFormat("error when player offline save player data to database");
             }
             AntGrowthProperties properties = player.Nests[0].GrowthProperties;
+            string distributionMap1, distributionMap2, distributionMap3;
+            player.Nests[0].Serialize3DistributionMap(out distributionMap1, out distributionMap2, out distributionMap3);
             if (!database.UpdataDataByID(player.UniqueID,
                 new string[]
                 {
-                    "Duration","Speed","Resistant","Population","Sensitivity"
+                    "Duration","Speed","Resistant","Population","Sensitivity","DistributionMap1","DistributionMap2","DistributionMap3"
                 },
                 new object[]
                 {
-                    properties.duration, properties.speed, properties.resistant, properties.population, properties.sensitivity
+                    properties.duration, properties.speed, properties.resistant, properties.population, properties.sensitivity, distributionMap1, distributionMap2, distributionMap3
                 }, "nest", "PlayerID"))
             {
                 Log.ErrorFormat("error when player offline save nest data to database");
             }
             return playerManager.ErasePlayer(player);
+        }
+        public ChallengePlayerInfo[] FetchNChallengePlayerInfoWithKnownFriends(int n, long[] friendsFBIDs, long selfFacebookID)
+        {
+            var infos = database.FetchRandomNPlayerInfo(n);
+            if(infos.ContainsKey(selfFacebookID))
+            {
+                infos.Remove(selfFacebookID);
+            }
+            List<ChallengePlayerInfo> friendsInfo = new List<ChallengePlayerInfo>();
+            foreach(long facebookID in friendsFBIDs)
+            {
+                if(!infos.ContainsKey(facebookID))
+                {
+                    friendsInfo.Add(database.FetchPlayerInfoWithFacebookID(facebookID));
+                }
+            }
+            foreach(ChallengePlayerInfo info in friendsInfo)
+            {
+                infos.Add(info.facebookID, info);
+            }
+            return infos.Values.ToArray();
+        }
+        public Nest GetNest(long facebookID)
+        {
+            return database.GetNest(facebookID);
+        }
+        public HarvestPlayerInfo[] FetchNHarvestPlayerInfoWithKnownFriends(int n, long[] friendsFBIDs, long selfFacebookID)
+        {
+            var infos = database.FetchRandomNHarvestPlayerInfo(n);
+            if (infos.ContainsKey(selfFacebookID))
+            {
+                infos.Remove(selfFacebookID);
+            }
+            List<HarvestPlayerInfo> friendsInfo = new List<HarvestPlayerInfo>();
+            foreach (long facebookID in friendsFBIDs)
+            {
+                if (!infos.ContainsKey(facebookID))
+                {
+                    friendsInfo.Add(database.FetchHarvestPlayerInfoWithFacebookID(facebookID));
+                }
+            }
+            foreach (HarvestPlayerInfo info in friendsInfo)
+            {
+                infos.Add(info.facebookID, info);
+            }
+            return infos.Values.ToArray();
+        }
+        public void SaveDefence(int uniqueID, string defenceDataString, int usedBudget)
+        {
+            if (!database.UpdataDataByUniqueID(uniqueID,
+                new string[]
+                {
+                    "DefenceTowersDataString", "UsedDefenceBudget"
+                },
+                new object[]
+                {
+                    defenceDataString, usedBudget
+                }, "player"))
+            {
+                Log.ErrorFormat("error when player saving player defence to database");
+            }
+        }
+        public string GetDefenceDataString(long facebookID)
+        {
+            return database.GetDefenceDataString(facebookID);
+        }
+        public void SavePlayerCakeCount(int uniqueID, int cakeCount)
+        {
+            if (!database.UpdataDataByUniqueID(uniqueID,
+                new string[]
+                {
+                    "CakeCount"
+                },
+                new object[]
+                {
+                    cakeCount
+                }, "player"))
+            {
+                Log.ErrorFormat("error when player save cake count to database");
+            }
+            playerManager.InformCakeNumberChange(uniqueID, cakeCount);
+        }
+        public void SaveHarvestResult(long defenderFacebookID, int harvestResult)
+        {
+            int uniqueID;
+            database.ContainsPlayer(defenderFacebookID, out uniqueID);
+            if(!playerManager.Harvested(uniqueID, harvestResult))
+            {
+                object[] result = database.GetDataByUniqueID(uniqueID, new string[]{ "CakeCount" }, new TypeCode[] { TypeCode.Int32 }, "player");
+                if(result != null && result.Length == 1)
+                {
+                    int cakeCount = Math.Max((int)result[0] - harvestResult, 0);
+                    SavePlayerCakeCount(uniqueID, cakeCount);
+                }
+            }
         }
     }
 }

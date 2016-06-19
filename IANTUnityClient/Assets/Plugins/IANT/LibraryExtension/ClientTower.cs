@@ -18,6 +18,10 @@ public class ClientTower : Tower
     {
         return new ClientTower(properties, bulletPrefab);
     }
+    public override Tower Instantiate(TowerProperties properties)
+    {
+        return new ClientTower(properties, bulletPrefab);
+    }
 
     public void BindInstance(GameObject instance, Button button)
     {

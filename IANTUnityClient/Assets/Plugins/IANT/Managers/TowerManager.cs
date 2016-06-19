@@ -14,12 +14,15 @@ public class TowerManager : MonoBehaviour
     private Text buildTowerCostText;
     [SerializeField]
     private TowerInfoController towerInfoController;
+    [SerializeField]
+    private Canvas canvus;
 
     private ClientTower selectedTower;
 
     public GameObject InstantiateNewTower(float positionX, float positionY, out Button button)
     {
         button = Instantiate(towerButtonPrefab, new Vector3(positionX, positionY, 3), Quaternion.identity) as Button;
+        button.transform.SetParent(canvus.transform);
         return Instantiate(towerPrefab, new Vector3(positionX, positionY, 3), Quaternion.identity) as GameObject;
     }
     public void DestroyTowerInstance(ClientTower tower)
