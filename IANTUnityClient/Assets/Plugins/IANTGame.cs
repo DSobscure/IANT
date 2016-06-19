@@ -9,6 +9,7 @@ public static class IANTGame
     public static readonly PhotonService Service = new PhotonService();
     public static readonly ActionManager ActionManager = new ActionManager();
     public static readonly ResponseManager ResponseManager = new ResponseManager();
+    public static readonly BroadcastManager BroadcastManager = new BroadcastManager();
     public static readonly InformManager InformManager = new InformManager();
     public static readonly string ServerName = "IANTServer";
     public static readonly string ServerAddress = "doorofsoul.duckdns.org";
@@ -21,6 +22,12 @@ public static class IANTGame
     public static string FacebookID = null;
     public static string FacebookAccessToken = null;
     public static int UsedCakeNumber;
+    public static Nest BattleNest = null;
+    public static long ChallengeFacebookID;
+    public static long HarvestFacebookID;
+    public static string GameType;
+    public static string HarvestTargetDefenceDataString;
+    public static int HarvestableCakeNumber;
 
     private static IDictionary<string, object> profileResult = null;
     public static IDictionary<string, object> ProfileResult

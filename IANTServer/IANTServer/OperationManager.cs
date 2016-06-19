@@ -20,7 +20,13 @@ namespace IANTServer
                 { OperationCode.TakeCake, new TakeCakeHandler(peer) },
                 { OperationCode.UpgradeNest, new UpgradeNestHandler(peer) },
                 { OperationCode.StartGame, new StartGameHandler(peer) },
-                { OperationCode.GameOver, new GameOverHandler(peer) }
+                { OperationCode.GameOver, new GameOverHandler(peer) },
+                { OperationCode.GetChallengePlayerList, new GetChallengePlayerListHandler(peer) },
+                { OperationCode.ChallengeGame, new StartChallengeGameHandler(peer) },
+                { OperationCode.SetDefence, new SetDefenceHandler(peer) },
+                { OperationCode.GetHarvestPlayerList, new GetHarvestPlayerListHandler(peer) },
+                { OperationCode.HarvestGame, new StartHarvestGameHandler(peer) },
+                { OperationCode.HarvestGameOver, new HarvestGameOverHandler(peer) }
             };
         }
 

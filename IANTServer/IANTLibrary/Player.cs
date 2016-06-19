@@ -12,6 +12,8 @@ namespace IANTLibrary
         public List<FoodInfo> foodInfos;
         public List<Nest> nests;
         public DateTime lastTakeCakeTime;
+        public string defenceDataString;
+        public int usedDefenceBudget;
     }
     public class Player
     {
@@ -64,6 +66,9 @@ namespace IANTLibrary
                 }
             }
         }
+        public int DefenceBudget { get { return 10000 * Level; } }
+        public string DefenceDataString { get { return properties.defenceDataString; } set { properties.defenceDataString = value; } }
+        public int UsedDefenceBudget { get { return properties.usedDefenceBudget; } set { properties.usedDefenceBudget = value; } }
 
         public Action<int> OnCakeCountChange;
         public Action<int> OnLevelChange;

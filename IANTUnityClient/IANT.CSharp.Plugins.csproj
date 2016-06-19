@@ -58,20 +58,20 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\Plugins\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="IANTLibrary">
       <HintPath>Assets\Plugins\IANT\IANTLibrary.dll</HintPath>
     </Reference>
     <Reference Include="IANTProtocol">
       <HintPath>Assets\Plugins\IANT\IANTProtocol.dll</HintPath>
+    </Reference>
+    <Reference Include="NeuralNetworkLibrary">
+      <HintPath>Assets\Plugins\IANT\NeuralNetworkLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>Assets\Plugins\Photon\Photon3Unity3D.dll</HintPath>
@@ -96,18 +96,25 @@
     <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientTower.cs" />
     <Compile Include="Assets\Plugins\IANT\LibraryExtension\ClientTowerFactory.cs" />
     <Compile Include="Assets\Plugins\IANT\Managers\AntManager.cs" />
+    <Compile Include="Assets\Plugins\IANT\Managers\DisplaceDefenceTowerManager.cs" />
     <Compile Include="Assets\Plugins\IANT\Managers\GameManager.cs" />
+    <Compile Include="Assets\Plugins\IANT\Managers\HarvestGameManager.cs" />
     <Compile Include="Assets\Plugins\IANT\Managers\TowerManager.cs" />
     <Compile Include="Assets\Plugins\IANT\SpriteText.cs" />
     <Compile Include="Assets\Plugins\IANTGame.cs" />
     <Compile Include="Assets\Plugins\Interface\IController.cs" />
+    <Compile Include="Assets\Plugins\Interface\IGameManager.cs" />
     <Compile Include="Assets\Plugins\Interface\IInformHandler.cs" />
     <Compile Include="Assets\Plugins\Interface\IResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ActionManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ActionManagers\AuthenticateActionManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ActionManagers\FetchDataActionManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ActionManagers\OperationManager.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\BroadcastManager.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\BroadcastManagers\BroadcastHandler.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\BroadcastManagers\CakeNumberChangeBroadcastHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\InformManager.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\InformManagers\GameInformManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\InformManagers\SystemInformManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\AuthenticationResponseManager.cs" />
@@ -115,16 +122,24 @@
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\OperationResponseManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\GameOverResponseHandler.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\GetChallengePlayerListResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\GetConfigurationsResponseHandler.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\GetHarvestPlayerListResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\LoginResponseHandler.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\SetDefenceResponseHandler.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\StartChallengeGameResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\StartGameResponseHandler.cs" />
+    <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\StartHarvestGameResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\TakeCakeResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\ResponseHandlers\UpgradeNestResponseHandler.cs" />
     <Compile Include="Assets\Plugins\Photon\Managers\ResponseManagers\SystemResponseManager.cs" />
     <Compile Include="Assets\Plugins\Photon\Service.cs" />
     <Compile Include="Assets\Plugins\PhotonWebGL\SocketWebTcp.cs" />
     <Compile Include="Assets\Plugins\PhotonWebGL\WebSocket\WebSocket.cs" />
+    <Compile Include="Assets\Plugins\Strucures\ChallengePlayerInfo.cs" />
+    <Compile Include="Assets\Plugins\Strucures\HarvestPlayerInfo.cs" />
     <Compile Include="Assets\Plugins\Test\FoodManagerTest.cs" />
+    <Compile Include="Assets\Plugins\Test\SerializationTest.cs" />
     <Compile Include="Assets\Plugins\Test\WeightTest.cs" />
   </ItemGroup>
   <ItemGroup>

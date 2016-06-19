@@ -58,20 +58,20 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\Plugins\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="IANTLibrary">
       <HintPath>Assets\Plugins\IANT\IANTLibrary.dll</HintPath>
     </Reference>
     <Reference Include="IANTProtocol">
       <HintPath>Assets\Plugins\IANT\IANTProtocol.dll</HintPath>
+    </Reference>
+    <Reference Include="NeuralNetworkLibrary">
+      <HintPath>Assets\Plugins\IANT\NeuralNetworkLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>Assets\Plugins\Photon\Photon3Unity3D.dll</HintPath>
@@ -186,6 +186,8 @@
     <Compile Include="Assets\Scripts\Communications\ConnectController.cs" />
     <Compile Include="Assets\Scripts\Controllers\BuildTowerButtonController.cs" />
     <Compile Include="Assets\Scripts\Controllers\BuildTowerController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\ChallengeModeController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\HarvestModeController.cs" />
     <Compile Include="Assets\Scripts\Controllers\KitchenControllerK.cs" />
     <Compile Include="Assets\Scripts\Controllers\PlayerInfoController.cs" />
     <Compile Include="Assets\Scripts\Controllers\SceneLoadController.cs" />
@@ -198,8 +200,10 @@
     <Compile Include="Assets\Scripts\System\SystemSetting.cs" />
     <Compile Include="Assets\Scripts\Tests\PlayerInfoTest.cs" />
     <Compile Include="Assets\Scripts\Tests\XmlConfigTest.cs" />
+    <Compile Include="Assets\Scripts\UIs\ChallengeModePanelUI.cs" />
     <Compile Include="Assets\Scripts\UIs\DraggablePanel.cs" />
     <Compile Include="Assets\Scripts\UIs\GameInformationPanelSwitch.cs" />
+    <Compile Include="Assets\Scripts\UIs\HarvestModePanelUI.cs" />
     <Compile Include="Assets\Scripts\UIs\KitchenUI.cs" />
     <Compile Include="Assets\Scripts\UIs\NestInfoUI.cs" />
     <Compile Include="Assets\Scripts\UIs\StartMenuUI.cs" />

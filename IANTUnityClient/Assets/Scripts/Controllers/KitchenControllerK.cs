@@ -42,6 +42,7 @@ public class KitchenControllerK : MonoBehaviour, IResponseHandler
 
     public void TakeCake()
     {
-        IANTGame.ActionManager.OperationManager.TakeCake();
+        if(kitchenUI.CakeCount() > 0)
+            IANTGame.ActionManager.OperationManager.TakeCake();
     }
 }

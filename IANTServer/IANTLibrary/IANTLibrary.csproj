@@ -25,12 +25,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\IANT\IANT\Assets\Plugins\IANT\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NeuralNetworkLibrary">
+      <HintPath>..\NeuralNetworkLibrary\bin\Debug\NeuralNetworkLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +53,7 @@
     <Compile Include="Bullets\WindBullet.cs" />
     <Compile Include="Bullets\WoodBullet.cs" />
     <Compile Include="Cake.cs" />
+    <Compile Include="DistributionMap.cs" />
     <Compile Include="ElelmentType.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="FoodFactory.cs" />
@@ -57,6 +61,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="LevelEXPTable.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="MathTool.cs" />
     <Compile Include="Nest.cs" />
     <Compile Include="NestLevelFoodTable.cs" />
     <Compile Include="Player.cs" />

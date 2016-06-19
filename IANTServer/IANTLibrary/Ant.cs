@@ -31,25 +31,27 @@ namespace IANTLibrary
             }
             protected set
             {
-                if(!isDead)
+                if (!isDead)
                 {
+                    properties.hp = Math.Min(value, MaxHP);
                     PositionInfo positionInfo = new PositionInfo { x = PositionX, y = PositionY };
-                    AntStayInfo stayInfo = new AntStayInfo { damageRatioDelta = 0.1f , timeDelta = 0.1f };
+                    AntStayInfo stayInfo = new AntStayInfo { hpRatioDelta = HPRatio - hpRatioPreStay, timeDelta = 0.01f };
                     if (antStayInfo.ContainsKey(positionInfo))
                     {
-                        antStayInfo[positionInfo] = new AntStayInfo() { damageRatioDelta = antStayInfo[positionInfo].damageRatioDelta + stayInfo.damageRatioDelta, timeDelta = antStayInfo[positionInfo].timeDelta + stayInfo.timeDelta };
+                        antStayInfo[positionInfo] = new AntStayInfo() { hpRatioDelta = antStayInfo[positionInfo].hpRatioDelta + stayInfo.hpRatioDelta, timeDelta = antStayInfo[positionInfo].timeDelta + stayInfo.timeDelta };
                     }
                     else
                     {
                         antStayInfo.Add(positionInfo, stayInfo);
                     }
-                    properties.hp = Math.Min(value, MaxHP);
+                    hpRatioPreStay = HPRatio;
                     OnHPChange?.Invoke(properties.hp);
                     if (properties.hp <= 0)
                     {
                         isDead = true;
                         OnAntDead?.Invoke();
                         nest.AntStay(antStayInfo);
+                        nest.GoodFormation(-1);
                     }
                 }
             }
@@ -66,9 +68,9 @@ namespace IANTLibrary
                 {
                     return 0;
                 }
-                else if(IceEffectDuration > 0 || FireEffectDuration > 0)
+                else if (IceEffectDuration > 0 || FireEffectDuration > 0)
                 {
-                    return properties.velocity / Math.Max(IceEffectSlowDownRatio + 1, 1) * Math.Max(1+FireEffectSpeedUp, 1);
+                    return properties.velocity / Math.Max(IceEffectSlowDownRatio + 1, 1) * Math.Max(1 + FireEffectSpeedUp, 1);
                 }
                 else
                 {
@@ -79,9 +81,10 @@ namespace IANTLibrary
         }
         public float Resistant { get { return properties.resistant; } protected set { properties.resistant = value; } }
         protected Nest nest;
-        protected Dictionary<PositionInfo,AntStayInfo> antStayInfo = new Dictionary<PositionInfo, AntStayInfo>();
+        protected Dictionary<PositionInfo, AntStayInfo> antStayInfo = new Dictionary<PositionInfo, AntStayInfo>();
         protected float hpRatioPreStay;
         protected float deltaTimeCounter = 0;
+        public float HPRatio { get { return HP / (float)MaxHP; } }
 
         public float IceEffectDuration { get; protected set; } = 0;
         public float IceEffectSlowDownRatio { get; protected set; } = 1f;
@@ -104,16 +107,17 @@ namespace IANTLibrary
             AntCounter++;
             poisonHP = MaxHP;
             this.nest = nest;
-            hpRatioPreStay = MaxHP;
+            hpRatioPreStay = HPRatio;
         }
 
         public bool TakeFood(Food food)
         {
-            if(!isDead)
+            if (!isDead)
             {
                 properties.food = food;
-                HP += MaxHP / 2;
+                HP += MaxHP / 4;
                 OnFoodChanged?.Invoke();
+                nest.GoodFormation(2);
                 return true;
             }
             else
@@ -126,6 +130,7 @@ namespace IANTLibrary
             foodManager.ReplaceFood(properties.food);
             properties.food = null;
             OnFoodChanged?.Invoke();
+            nest.GoodFormation(-0.5);
         }
         public void PutFood(FoodFactory foodManager)
         {
@@ -134,6 +139,7 @@ namespace IANTLibrary
             OnFoodChanged?.Invoke();
             nest.AntStay(antStayInfo);
             antStayInfo.Clear();
+            nest.GoodFormation(2000);
         }
         public abstract Ant Duplicate();
         public void UpdatePosition(float x, float y)
@@ -143,22 +149,30 @@ namespace IANTLibrary
         }
         public void Hurt(int damage)
         {
-            if(damage > nest.GrowthProperties.duration * Level/10)
+            if (damage > nest.GrowthProperties.duration * Level / 10)
             {
                 HP -= damage;
             }
         }
+        public void Heal(int value)
+        {
+            HP += value;
+        }
         public virtual void Move()
         {
-            Rotation = nest.GetProperRotation(this);
+            float rotation = nest.GetProperRotation(this);
+            if(rotation >= 0)
+            {
+                Rotation = nest.GetProperRotation(this);
+            }
         }
         public void LevelUp()
         {
             Level += 1;
-            properties.maxHP = Convert.ToInt32(3 + Math.Pow(1 + Level / 4.5f, 2 + nest.GrowthProperties.duration/10.0));
+            properties.maxHP = Convert.ToInt32(5 + Math.Pow(1 + Level / 3.5f, 2.1 + nest.GrowthProperties.duration / 8.0));
             HP = MaxHP;
             Speed += nest.GrowthProperties.speed;
-            Resistant = (float)(Math.Atan((double)nest.GrowthProperties.resistant * Level / 100) / Math.PI * 2);
+            Resistant = (float)(Math.Atan((nest.GrowthProperties.resistant+0.5) * Level / 100) / Math.PI * 2);
         }
         public void UpdateTransform(float x, float y, float rotation)
         {
@@ -178,30 +192,31 @@ namespace IANTLibrary
             ThunderEffectTimePass(deltaTime);
             PoisonEffectTimePass(deltaTime);
             PositionInfo positionInfo = new PositionInfo { x = PositionX, y = PositionY };
-            AntStayInfo stayInfo = new AntStayInfo { damageRatioDelta = hpRatioPreStay - HP / (float)MaxHP - deltaTime * 0.005f, timeDelta = deltaTime };
-            if(IsTakingFood)
+            AntStayInfo stayInfo = new AntStayInfo { hpRatioDelta = HPRatio - hpRatioPreStay - deltaTime * 0.2f, timeDelta = deltaTime };
+            if (IsTakingFood)
             {
-                stayInfo.damageRatioDelta -= deltaTime * 0.1f * HP / (float)MaxHP;
+                stayInfo.hpRatioDelta += deltaTime * 0.1f * HPRatio;
             }
-            if(antStayInfo.ContainsKey(positionInfo))
+            if (antStayInfo.ContainsKey(positionInfo))
             {
-                antStayInfo[positionInfo] = new AntStayInfo() { damageRatioDelta = antStayInfo[positionInfo].damageRatioDelta + stayInfo.damageRatioDelta, timeDelta = antStayInfo[positionInfo].timeDelta + stayInfo.timeDelta };
+                antStayInfo[positionInfo] = new AntStayInfo() { hpRatioDelta = antStayInfo[positionInfo].hpRatioDelta + stayInfo.hpRatioDelta, timeDelta = antStayInfo[positionInfo].timeDelta + stayInfo.timeDelta };
             }
             else
             {
                 antStayInfo.Add(positionInfo, stayInfo);
             }
             deltaTimeCounter += deltaTime;
-            hpRatioPreStay = HP/(float)MaxHP;
-            if(deltaTimeCounter % 2 > 1)
+            hpRatioPreStay = HP / (float)MaxHP;
+            if (deltaTimeCounter % 2 > 1)
             {
                 nest.AntStay(antStayInfo);
             }
-            if(deltaTimeCounter > 5)
+            if (deltaTimeCounter > 5)
             {
                 nest.AntStay(antStayInfo);
                 antStayInfo.Clear();
                 deltaTimeCounter = 0;
+                nest.GoodFormation(0.2);
             }
         }
         public void FireEffectTimePass(float deltaTime)
@@ -278,7 +293,7 @@ namespace IANTLibrary
         {
             float maxDuration = 1f * bullet.ElementLevel * (1 - Resistant); ;
             float maxSlowDownRation = 1.3f * bullet.ElementLevel * (1 - Resistant); ;
-            if(IceEffectDuration + bullet.EffectDuration > maxDuration)
+            if (IceEffectDuration + bullet.EffectDuration > maxDuration)
             {
                 IceEffectDuration = Math.Max(IceEffectDuration, maxDuration);
             }
@@ -286,7 +301,7 @@ namespace IANTLibrary
             {
                 IceEffectDuration = IceEffectDuration + bullet.EffectDuration;
             }
-            if(IceEffectSlowDownRatio + bullet.SlowDownRatio > maxSlowDownRation)
+            if (IceEffectSlowDownRatio + bullet.SlowDownRatio > maxSlowDownRation)
             {
                 IceEffectSlowDownRatio = Math.Max(IceEffectSlowDownRatio, maxSlowDownRation);
             }
@@ -298,7 +313,7 @@ namespace IANTLibrary
         public void ThunderEffect(ThunderBullet bullet)
         {
             Random random = new Random();
-            if(random.NextDouble() < bullet.ParalysisProbability * (1 - Resistant))
+            if (random.NextDouble() < bullet.ParalysisProbability * (1 - Resistant))
             {
                 float maxDuration = 0.2f * bullet.ElementLevel * (1 - Resistant); ;
                 if (ThunderEffectDuration + bullet.EffectDuration > maxDuration)
@@ -331,7 +346,7 @@ namespace IANTLibrary
             {
                 Poison = Poison + bullet.Poison;
             }
-            if(poisonHP == 0)
+            if (poisonHP == 0)
             {
                 poisonHP = HP;
             }

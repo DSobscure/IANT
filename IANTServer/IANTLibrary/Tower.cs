@@ -25,6 +25,7 @@ namespace IANTLibrary
     {
         static int TowerCounter = 0;
         protected TowerProperties properties;
+        public TowerProperties Properties { get { return properties; } }
         public int UniqueID { get; }
         public string Name { get { return properties.name + Level.ToString(); } protected set { properties.name = value; } }
         public int Level { get { return properties.level; } protected set { properties.level = value; } }
@@ -83,6 +84,13 @@ namespace IANTLibrary
             }
             else
                 TargetAimed = null;
+        }
+        public void AimOnTarget(Ant target)
+        {
+            if(targetsInRange.Contains(target))
+            {
+                TargetAimed = target;
+            }
         }
         public virtual bool Fire(out Bullet[] bullets)
         {
@@ -147,6 +155,10 @@ namespace IANTLibrary
             }
         }
         public virtual Tower Duplicate()
+        {
+            return new Tower(properties);
+        }
+        public virtual Tower Instantiate(TowerProperties properties)
         {
             return new Tower(properties);
         }

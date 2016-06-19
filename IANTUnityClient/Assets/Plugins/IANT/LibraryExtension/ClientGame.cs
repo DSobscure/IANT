@@ -4,7 +4,7 @@ using IANTLibrary;
 
 public class ClientGame : Game
 {
-    private GameManager gameManager;
+    private IGameManager gameManager;
     public ClientGame(GameConfiguration configuration) : base(configuration)
     {
         AntFactory = new ClientAntFactory(configuration.antPrefab, this);
@@ -15,7 +15,7 @@ public class ClientGame : Game
     {
 
     }
-    public void BindManager(GameManager gameManager)
+    public void BindManager(IGameManager gameManager)
     {
         this.gameManager = gameManager;
         OnWaveChange += gameManager.UpdateWave;

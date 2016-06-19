@@ -3,8 +3,10 @@ using System.Linq;
 using UnityEngine.UI;
 using IANTLibrary;
 using System.Collections.Generic;
+using Managers;
+using System;
 
-public class PlayerInfoController : MonoBehaviour
+public class PlayerInfoController : MonoBehaviour, IInformHandler
 {
     [SerializeField]
     private Text nameText;
@@ -31,6 +33,7 @@ public class PlayerInfoController : MonoBehaviour
         {
             expText.text = string.Format("{0}/{1}", value, experiencePointsSlider.maxValue);
         });
+        RegisterEvents(IANTGame.InformManager);
     }
     void OnDestroy()
     {
@@ -39,6 +42,7 @@ public class PlayerInfoController : MonoBehaviour
         IANTGame.Player.OnCakeCountChange -= OnCakeCountChangeAction;
         IANTGame.Player.OnLevelChange -= OnLevelChangeAction;
         IANTGame.Player.OnEXPChange -= OnEXPChangeAction;
+        EraseEvents(IANTGame.InformManager);
     }
 
     public void UpdatePlayerInfo(Player player)
@@ -79,5 +83,15 @@ public class PlayerInfoController : MonoBehaviour
     private void OnEXPChangeAction(int exp)
     {
         experiencePointsSlider.value = exp;
+    }
+
+    public void RegisterEvents(InformManager informManager)
+    {
+        informManager.GameInformManager.RegistrCakeNumberChangeInformFunction(OnCakeCountChangeAction);
+    }
+
+    public void EraseEvents(InformManager informManager)
+    {
+        informManager.GameInformManager.EraseCakeNumberChangeInformFunction(OnCakeCountChangeAction);
     }
 }

@@ -62,6 +62,7 @@ public class AntInfoController : MonoBehaviour
         if(selectedAnt != null)
         {
             ShowAntInfo(selectedAnt);
+            IANTGame.Game.TowerFactory.AimOnTarget(selectedAnt);
             if (selectedAnt.HP <= 0)
             {
                 selectedAnt = null;

@@ -38,6 +38,8 @@ namespace IANTServer.OperationHandlers
                     ServerPlayer player = Application.ServerInstance.InstantiatePlayerWithFacebookID(Convert.ToInt64(facebookID), peer);
                     peer.BindPlayer(player);
                     Application.ServerInstance.PlayrOnline(player);
+                    string distributionMap1, distributionMap2, distributionMap3;
+                    player.Nests[0].Serialize3DistributionMap(out distributionMap1, out distributionMap2, out distributionMap3);
                     Dictionary<byte, object> parameter = new Dictionary<byte, object>()
                     {
                         { (byte)LoginResponseParameterCode.UniqueID, player.UniqueID },
@@ -49,8 +51,12 @@ namespace IANTServer.OperationHandlers
                         { (byte)LoginResponseParameterCode.FirstNestSpeed, player.Nests[0].GrowthProperties.speed},
                         { (byte)LoginResponseParameterCode.FirstNestResistant, player.Nests[0].GrowthProperties.resistant},
                         { (byte)LoginResponseParameterCode.FirstNestPopulation, player.Nests[0].GrowthProperties.population},
-                        { (byte)LoginResponseParameterCode.FirstNestSensitivity, player.Nests[0].GrowthProperties.sensitivity}
-
+                        { (byte)LoginResponseParameterCode.FirstNestSensitivity, player.Nests[0].GrowthProperties.sensitivity},
+                        { (byte)LoginResponseParameterCode.FirstNestDistributionMap1, distributionMap1},
+                        { (byte)LoginResponseParameterCode.FirstNestDistributionMap2, distributionMap2},
+                        { (byte)LoginResponseParameterCode.FirstNestDistributionMap3, distributionMap3},
+                        { (byte)LoginResponseParameterCode.DefenceDataString, player.DefenceDataString},
+                        { (byte)LoginResponseParameterCode.UsedDefenceBudget, player.UsedDefenceBudget }
                     };
                     SendResponse(operationRequest.OperationCode, parameter);
                     return true;

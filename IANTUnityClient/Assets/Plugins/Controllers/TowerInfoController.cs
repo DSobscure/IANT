@@ -85,15 +85,15 @@ public class TowerInfoController : MonoBehaviour
         else
             stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
         if (tower.Frequency != upgradedTower.Frequency)
-            stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
+            stringBuilder.AppendFormat("頻率： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
         else
             stringBuilder.AppendFormat("頻率： {0} 次/秒\n", tower.Frequency);
         if(tower.Speed != upgradedTower.Speed)
-            stringBuilder.AppendFormat("頻率： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
+            stringBuilder.AppendFormat("初速度： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
         else
             stringBuilder.AppendFormat("初速度： {0}\n", tower.Speed);
         if(tower.BulletNumber != upgradedTower.BulletNumber)
-            stringBuilder.AppendFormat("初速度： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
+            stringBuilder.AppendFormat("彈數： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
         else
             stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
         towerInfoText.text = stringBuilder.ToString();
@@ -113,15 +113,15 @@ public class TowerInfoController : MonoBehaviour
         else
             stringBuilder.AppendFormat("射程： {0}\n", tower.Range);
         if (tower.Frequency != upgradedTower.Frequency)
-            stringBuilder.AppendFormat("射速： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
+            stringBuilder.AppendFormat("頻率： {0} → {1} 次/秒\n", tower.Frequency, upgradedTower.Frequency);
         else
             stringBuilder.AppendFormat("頻率： {0} 次/秒\n", tower.Frequency);
         if (tower.Speed != upgradedTower.Speed)
-            stringBuilder.AppendFormat("頻率： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
+            stringBuilder.AppendFormat("初速度： {0} → {1}\n", tower.Speed, upgradedTower.Speed);
         else
             stringBuilder.AppendFormat("初速度： {0}\n", tower.Speed);
         if (tower.BulletNumber != upgradedTower.BulletNumber)
-            stringBuilder.AppendFormat("初速度： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
+            stringBuilder.AppendFormat("彈數： {0} → {1}\n", tower.BulletNumber, upgradedTower.BulletNumber);
         else
             stringBuilder.AppendFormat("彈數： {0}\n", tower.BulletNumber);
         if(tower.BulletSpanRange != upgradedTower.BulletSpanRange)

@@ -15,6 +15,7 @@ namespace IANTLibrary
         public float FoodPlatePositionX { get; protected set; }
         public float FoodPlatePositionY { get; protected set; }
         public float Radius { get; protected set; }
+        public int TakenFoodCount { get; protected set; }
 
         public event Action<int> OnRemainedFoodCountChange;
 
@@ -26,6 +27,7 @@ namespace IANTLibrary
             FoodPlatePositionY = game.FoodPlatePositionY;
             Radius = game.FoodPlateRadius;
             this.game = game;
+            TakenFoodCount = 0;
         }
 
         public void FillFood(Food food, int count)
@@ -70,7 +72,8 @@ namespace IANTLibrary
         public void EraseFood(Food food)
         {
             foodList.Remove(food);
-            if(foodList.Count == 0)
+            TakenFoodCount++;
+            if (foodList.Count == 0)
             {
                 game.GameOver();
             }

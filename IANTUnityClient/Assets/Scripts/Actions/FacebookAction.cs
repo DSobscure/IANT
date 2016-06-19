@@ -83,4 +83,16 @@ public class FacebookAction : MonoBehaviour, IResponseHandler
             IANTGame.ProfilePhoto = result.Texture;
         }
     }
+    public void GetFriendList(FacebookDelegate<IGraphResult> callBackFunction)
+    {
+        FB.API("/me/friends?fields=id,name", HttpMethod.GET, callBackFunction);
+    }
+    public void GetUserName(long facebooID, FacebookDelegate<IGraphResult> callBackFunction)
+    {
+        FB.API(string.Format("/{0}", facebooID), HttpMethod.GET, callBackFunction);
+    }
+    public void GetUserPhoto(long facebooID, FacebookDelegate<IGraphResult> callBackFunction)
+    {
+        FB.API(string.Format("/{0}/picture", facebooID), HttpMethod.GET, callBackFunction);
+    }
 }

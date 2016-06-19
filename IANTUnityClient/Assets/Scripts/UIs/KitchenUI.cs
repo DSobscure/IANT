@@ -20,12 +20,17 @@ public class KitchenUI : MonoBehaviour
         else if(duration.TotalMinutes < 0)
         {
             cakeCountText.text = "0";
-            remainedTimeForMakingCakeText.text = "";
+            remainedTimeForMakingCakeText.text = "please wait";
         }
         else
         {
             cakeCountText.text = ((int)duration.TotalMinutes / 5).ToString();
             remainedTimeForMakingCakeText.text = string.Format("剩餘{0}分{1}秒", 4 - (duration.Minutes%5), 59 - duration.Seconds);
         }
+    }
+
+    public int CakeCount()
+    {
+        return int.Parse(cakeCountText.text);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NeuralNetworkLibrary;
 
 namespace IANTLibrary
 {
@@ -56,7 +57,7 @@ namespace IANTLibrary
     }
     public struct AntStayInfo
     {
-        public float damageRatioDelta;
+        public float hpRatioDelta;
         public float timeDelta;
     }
     public struct FormationInfo
@@ -86,13 +87,10 @@ namespace IANTLibrary
     {
         protected Game game;
         public float[,] weightsForSurvive;
-        public float[,] weightsForCake;
-        protected float[,] weightsForNest;
-        protected float hurtLearningRate = 0.05f;
-        protected float formationLearningRate = 0.2f;
-
-        public float[,] formationCakeWeight;
-        public float[,] formationWeight;
+        protected float hurtLearningRate { get { return 0.01f + 0.01f * GrowthProperties.sensitivity; } }
+        public List<DistributionMap> distributionMaps;
+        public DistributionMap distributionMap;
+        private HashSet<PositionInfo> searchHelper;
 
         protected AntGrowthProperties growthProperties;
         public AntGrowthProperties GrowthProperties
@@ -110,102 +108,109 @@ namespace IANTLibrary
         public Nest(AntGrowthProperties growthProperties)
         {
             GrowthProperties = growthProperties;
-            weightsForSurvive = new float[96, 60];
-            weightsForCake = new float[96, 60];
-            weightsForNest = new float[96, 60];
-            formationWeight = new float[96, 60];
-            formationCakeWeight = new float[96, 60];
-            for (int x = 0; x < 96; x++)
+            weightsForSurvive = new float[48, 30];
+            for (int x = 0; x < 48; x++)
+            {
+                for (int y = 0; y < 30; y++)
+                {
+                    weightsForSurvive[x, y] = -0.2f;
+                }
+            }
+            for (int x = 0; x < 48; x++)
             {
                 weightsForSurvive[x, 0] = float.MinValue;
-                weightsForSurvive[x, 59] = float.MinValue;
+                weightsForSurvive[x, 29] = float.MinValue;
             }
-            for (int y = 0; y < 60; y++)
+            for (int y = 0; y < 30; y++)
             {
                 weightsForSurvive[0, y] = float.MinValue;
-                weightsForSurvive[95, y] = float.MinValue;
+                weightsForSurvive[47, y] = float.MinValue;
             }
+            distributionMaps = new List<DistributionMap>();
+            distributionMaps.Add(new DistributionMap());
+            distributionMaps.Add(new DistributionMap());
+            distributionMaps.Add(new DistributionMap());
         }
         public void BindGame(Game game)
         {
             this.game = game;
-            int cakeBlockX = Convert.ToInt32(game.FoodPlatePositionX/10) + 48;
-            int cakeBlockY = Convert.ToInt32(game.FoodPlatePositionY/10) + 30;
-            int nestBlockX = Convert.ToInt32(game.NestPositionX/10) + 48;
-            int nestBlockY = Convert.ToInt32(game.NestPositionY/10) + 30;
-            for (int x = 0; x < 96; x++)
-            {
-                for(int y = 0; y < 60; y++)
-                {
-                    weightsForCake[x, y] = Convert.ToSingle(0.65 - 0.02 * Math.Sqrt(Math.Pow(cakeBlockX - x, 2) + Math.Pow(cakeBlockY - y, 2)));
-                    weightsForNest[x, y] = Convert.ToSingle(0.75 - 0.02 * Math.Sqrt(Math.Pow(nestBlockX - x, 2) + Math.Pow(nestBlockY - y, 2)));
-                }
-            }
+            int cakeBlockX = Convert.ToInt32(game.FoodPlatePositionX / 20) + 24;
+            int cakeBlockY = Convert.ToInt32(game.FoodPlatePositionY / 20) + 15;
+            int nestBlockX = Convert.ToInt32(game.NestPositionX / 20) + 24;
+            int nestBlockY = Convert.ToInt32(game.NestPositionY / 20) + 15;
         }
         public float GetProperRotation(Ant ant)
         {
             Random annelingFactorGenerator = new Random(Guid.NewGuid().GetHashCode());
             double annelingFactor = annelingFactorGenerator.NextDouble() * ant.HP / ant.MaxHP * 0.6;
-            if(ant.IsTakingFood)
+            if (ant.IsTakingFood)
             {
                 annelingFactor *= 0.2;
             }
-            int sensorDistance = 2 + GrowthProperties.sensitivity;
-            int antBlockX = Convert.ToInt32(ant.PositionX / 10) + 48;
-            int antBlockY = Convert.ToInt32(ant.PositionY / 10) + 30;
+            int sensorDistance = 1 + GrowthProperties.sensitivity;
+            int antBlockX = Convert.ToInt32(ant.PositionX / 20) + 24;
+            int antBlockY = Convert.ToInt32(ant.PositionY / 20) + 15;
             int formationX, formationY;
             GetFormationIndex(ant, out formationX, out formationY);
             List<BlockInfo> blockInfos = new List<BlockInfo>();
             for (int x = -sensorDistance; x <= sensorDistance; x++)
             {
-                if (antBlockX + x < 0 || x == 0 || antBlockX + x >= 96)
+                if (antBlockX + x < 0 || x == 0 || antBlockX + x >= 48)
                     continue;
-                for(int y = -sensorDistance; y <= sensorDistance; y++)
+                for (int y = -sensorDistance; y <= sensorDistance; y++)
                 {
-                    if (antBlockY + y < 0 || y == 0 || antBlockY + y >= 60)
+                    if (antBlockY + y < 0 || y == 0 || antBlockY + y >= 30)
                         continue;
                     float extraWeight = 0;
-                    float goalFormationWeight = 0;
-                    if(formationX + x >= 0 && formationX + x < 96 && formationY + y >= 0 && formationY + y < 60)
+                    if (ant.IsTakingFood)
                     {
-                        if(ant.IsTakingFood)
-                            goalFormationWeight = formationCakeWeight[formationX + x, formationY + y];
-                        else
-                            goalFormationWeight = formationWeight[formationX + x, formationY + y];
+                        if(Math.Sqrt(Math.Pow(ant.PositionX + x - game.NestPositionX, 2)+Math.Pow(ant.PositionY + y - game.NestPositionY, 2)) < Math.Sqrt(Math.Pow(ant.PositionX - game.NestPositionX, 2)+Math.Pow(ant.PositionY - game.NestPositionY, 2)))
+                            extraWeight = 0.1f;
                     }
+                    else if (game.FoodFactory.RemainedFoodCount > 0)
+                    {
+                        if (Math.Sqrt(Math.Pow(ant.PositionX + x - game.FoodPlatePositionX, 2) + Math.Pow(ant.PositionY + y - game.FoodPlatePositionY, 2)) < Math.Sqrt(Math.Pow(ant.PositionX - game.FoodPlatePositionX, 2) + Math.Pow(ant.PositionY - game.FoodPlatePositionY, 2)))
+                            extraWeight = 0.1f;
+                    }
+                    float formationWeight = 0;
                     if(ant.IsTakingFood)
                     {
-                        extraWeight = weightsForNest[antBlockX + x, antBlockY + y];
+                        formationWeight = distributionMap.GetDirectionWeight(ant, game.AntFactory.GetFormationInfo(ant), x, y) / 2;
                     }
-                    else if(game.FoodFactory.RemainedFoodCount > 0)
+                    else
                     {
-                        extraWeight = weightsForCake[antBlockX + x, antBlockY + y];
+                        formationWeight = distributionMap.GetDirectionWeight(ant, game.AntFactory.GetFormationInfo(ant), x, y);
                     }
-                    blockInfos.Add(new BlockInfo { x = x, y = y, weight = weightsForSurvive[antBlockX + x, antBlockY + y] + extraWeight + goalFormationWeight });
+                    searchHelper = new HashSet<PositionInfo>();
+                    blockInfos.Add(new BlockInfo { x = x, y = y, weight = GetLocalSurvive(antBlockX + x, antBlockY + y, 1 + GrowthProperties.sensitivity)/(1+(float)Math.Sqrt(x*x+y*y)/10) + extraWeight + formationWeight });
                 }
             }
             blockInfos.Sort();
             int selectIndex = blockInfos.Count - 1 - annelingFactorGenerator.Next(Convert.ToInt32((blockInfos.Count - 1) * annelingFactor));
             BlockInfo bestBlock = blockInfos[selectIndex];
-            return Convert.ToSingle(Math.Atan2(bestBlock.y, bestBlock.x) * 180 / Math.PI + 45 * annelingFactor);
+            if (bestBlock.x == 0 && bestBlock.y == 0)
+                return -1;
+            else
+                return (Convert.ToSingle(Math.Atan2(bestBlock.y, bestBlock.x) * 180 / Math.PI + 45 * annelingFactor) + 360f) % 360f;
         }
-        public void AntStay(Dictionary<PositionInfo,AntStayInfo> antStayInfos)
+        public void AntStay(Dictionary<PositionInfo, AntStayInfo> antStayInfos)
         {
             foreach (var antStayInfoPair in antStayInfos)
             {
-                int antBlockX = Convert.ToInt32(antStayInfoPair.Key.x / 10) + 48;
-                int antBlockY = Convert.ToInt32(antStayInfoPair.Key.y / 10) + 30;
+                int antBlockX = Convert.ToInt32(antStayInfoPair.Key.x / 20) + 24;
+                int antBlockY = Convert.ToInt32(antStayInfoPair.Key.y / 20) + 15;
                 int sensorDistance = 1;
-                float damage = antStayInfoPair.Value.damageRatioDelta / antStayInfoPair.Value.timeDelta;
+                float hpRatioDelta = antStayInfoPair.Value.hpRatioDelta / antStayInfoPair.Value.timeDelta;
                 for (int x = -sensorDistance; x <= sensorDistance; x++)
                 {
-                    if (antBlockX + x < 0 || antBlockX + x >= 96)
+                    if (antBlockX + x < 0 || antBlockX + x >= 48)
                         continue;
                     for (int y = -sensorDistance; y <= sensorDistance; y++)
                     {
-                        if (antBlockY + y < 0 || antBlockY + y >= 60)
+                        if (antBlockY + y < 0 || antBlockY + y >= 30)
                             continue;
-                        weightsForSurvive[antBlockX + x, antBlockY + y] += (-damage - weightsForSurvive[antBlockX + x, antBlockY + y]) * hurtLearningRate / (1 + (float)(Math.Sqrt(x * x + y * y)*10));
+                        float delta = hpRatioDelta - weightsForSurvive[antBlockX + x, antBlockY + y];
+                        weightsForSurvive[antBlockX + x, antBlockY + y] += (delta - Math.Sign(delta)*(float)(Math.Sqrt(x * x + y * y) * 0.01 * delta))*hurtLearningRate;
                     }
                 }
             }
@@ -213,47 +218,20 @@ namespace IANTLibrary
         public void GetFormationIndex(Ant ant, out int blockX, out int blockY)
         {
             var info = game.AntFactory.GetFormationInfo(ant).Find(x => x.ant == ant);
-            if(info.ant != null)
+            if (info.ant != null)
             {
                 blockX = info.blockX;
                 blockY = info.blockY;
             }
             else
             {
-                blockX = 48;
-                blockY = 30;
-            }
-        }
-        public void FormationTraning(Ant ant, float paneltyDelta)
-        {
-            if(ant != null)
-            {
-                int formationX, formationY;
-                GetFormationIndex(ant, out formationX, out formationY);
-                int sensorDistance = 2;
-                for (int x = -sensorDistance; x <= sensorDistance; x++)
-                {
-                    if (formationX + x < 0 || formationX + x >= 96)
-                        continue;
-                    for (int y = -sensorDistance; y <= sensorDistance; y++)
-                    {
-                        if (formationY + y < 0 || formationY + y >= 60)
-                            continue;
-                        if (ant.IsTakingFood)
-                        {
-                            formationCakeWeight[formationX + x, formationY + y] += (-paneltyDelta - formationCakeWeight[formationX + x, formationY + y]) * formationLearningRate / (1 + (float)(Math.Sqrt(x * x + y * y)));
-                        }
-                        else
-                        {
-                            formationWeight[formationX + x, formationY + y] += (-paneltyDelta - formationWeight[formationX + x, formationY + y]) * formationLearningRate / (1 + (float)(Math.Sqrt(x * x + y * y)));
-                        }
-                    }
-                }
+                blockX = 24;
+                blockY = 15;
             }
         }
         public bool UpgradeNest(AntGrowthDirection direction, Player player)
         {
-            if(player.UseCake(NestLevelFoodTable.FoodForUpgrade(GrowthProperties.Level)))
+            if (player.UseCake(NestLevelFoodTable.FoodForUpgrade(GrowthProperties.Level)))
             {
                 switch (direction)
                 {
@@ -282,6 +260,101 @@ namespace IANTLibrary
             {
                 return false;
             }
+        }
+        public float GetLocalSurvive(int x, int y, int deep)
+        {
+            List<float> surviveValues = new List<float>();
+            float self;
+            if (x < 48 && x >= 0 && y < 30 && y >= 0)
+                self = (weightsForSurvive[x, y]);
+            else
+                self = (-1);
+            if(searchHelper.Contains(new PositionInfo { x = x , y = y }))
+            {
+                return self;
+            }
+            else
+            {
+                searchHelper.Add(new PositionInfo { x = x, y = y });
+            }
+            if (deep == 1)
+            {
+                surviveValues.Add(self);
+            }
+            else
+            {
+                surviveValues.Add(self + GetLocalSurvive(x + 1, y + 1, deep - 1));
+                surviveValues.Add(self + GetLocalSurvive(x + 1, y - 1, deep - 1));
+                surviveValues.Add(self + GetLocalSurvive(x - 1, y + 1, deep - 1));
+                surviveValues.Add(self + GetLocalSurvive(x - 1, y - 1, deep - 1));
+            }
+            return surviveValues.Max();
+        }
+        public void GoodFormation(double value)
+        {
+            distributionMap.weight += value;
+        }
+        public void Load3DistributionMap(string map1, string map2, string map3)
+        {
+            string[] dataStrings = map1.Split(',');
+            for (int x = 0; x < 11; x++)
+            {
+                for (int y = 0; y < 11; y++)
+                {
+                    distributionMaps[0].distributionWeight[x, y] = double.Parse(dataStrings[x * 11 + y]);
+                }
+            }
+            dataStrings = map2.Split(',');
+            for (int x = 0; x < 11; x++)
+            {
+                for (int y = 0; y < 11; y++)
+                {
+                    distributionMaps[1].distributionWeight[x, y] = double.Parse(dataStrings[x * 11 + y]);
+                }
+            }
+            dataStrings = map3.Split(',');
+            for (int x = 0; x < 11; x++)
+            {
+                for (int y = 0; y < 11; y++)
+                {
+                    distributionMaps[2].distributionWeight[x, y] = double.Parse(dataStrings[x * 11 + y]);
+                }
+            }
+        }
+        public void Serialize3DistributionMap(out string map1, out string map2, out string map3)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int x = 0; x < 11; x++)
+            {
+                for (int y = 0; y < 11; y++)
+                {
+                    sb.Append(distributionMaps[0].distributionWeight[x, y]);
+                    sb.Append(',');
+                }
+            }
+            map1 = sb.ToString();
+
+            sb = new StringBuilder();
+            for (int x = 0; x < 11; x++)
+            {
+                for (int y = 0; y < 11; y++)
+                {
+                    sb.Append(distributionMaps[1].distributionWeight[x, y]);
+                    sb.Append(',');
+                }
+            }
+            map2 = sb.ToString();
+
+            sb = new StringBuilder();
+            for (int x = 0; x < 11; x++)
+            {
+                for (int y = 0; y < 11; y++)
+                {
+                    sb.Append(distributionMaps[2].distributionWeight[x, y]);
+                    sb.Append(',');
+                }
+            }
+            map3 = sb.ToString();
         }
     }
 }

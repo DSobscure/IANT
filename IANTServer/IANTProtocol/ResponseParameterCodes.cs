@@ -20,7 +20,12 @@ namespace IANTProtocol
         FirstNestSpeed,
         FirstNestResistant,
         FirstNestPopulation,
-        FirstNestSensitivity
+        FirstNestSensitivity,
+        FirstNestDistributionMap1,
+        FirstNestDistributionMap2,
+        FirstNestDistributionMap3,
+        DefenceDataString,
+        UsedDefenceBudget
     }
     public enum TakeCakeResponseParameterCode : byte
     {
@@ -44,5 +49,35 @@ namespace IANTProtocol
     {
         Level,
         EXP
+    }
+    public enum GetChallengePlayerListResponseParameterCode : byte
+    {
+        FacebookIDArray,
+        LevelArray,
+        NestLevelArray
+    }
+    public enum StartChallengeGameResponseParameterCode : byte
+    {
+        UsedCakeNumber,
+        NestDuration,
+        NestSpeed,
+        NestResistant,
+        NestPopulation,
+        NestSensitivity,
+        NestDistributionMap1,
+        NestDistributionMap2,
+        NestDistributionMap3
+    }
+    public enum GetHarvestPlayerListResponseParameterCode : byte
+    {
+        FacebookIDArray,
+        LevelArray,
+        HarvestableCakeNumberArray
+    }
+    public enum StartHarvestGameResponseParameterCode : byte
+    {
+        UsedCakeNumber,
+        HarvestTargetDefenceDataString,
+        HarvestableCakeNumber
     }
 }

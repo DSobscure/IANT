@@ -5,7 +5,7 @@ using IANTLibrary;
 using Managers;
 using System;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IGameManager
 {
     [SerializeField]
     private GameObject foodPlateObject;
@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     private GameOverHandler gameOverHandler;
     [SerializeField]
     private AntGrowthPanelController antGrowthPanelController;
+
+    private float deltaTime;
 
     void Update()
     {
@@ -100,6 +102,10 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         Nest nest = IANTGame.Player.Nests[0];
+        if(IANTGame.GameType == "challenge")
+        {
+            nest = IANTGame.BattleNest;
+        }
         Game game = IANTGame.Game;
         game.BindConfiguration(new GameConfiguration
         {
@@ -113,7 +119,7 @@ public class GameManager : MonoBehaviour
                 food = null,
                 hp = 5,
                 maxHP = 5,
-                velocity = 100
+                velocity = 100,
             }, nest),
             towerPrefab = new ClientTower(new TowerProperties
             {
@@ -121,7 +127,7 @@ public class GameManager : MonoBehaviour
                 upgradeCost = 50,
                 destroyReturn = 50,
                 bulletNumber = 1,
-                bulletSpanRange = 0,
+                bulletSpanRange = 10,
                 damage = 3,
                 level = 1,
                 elementType = ElelmentType.Normal,

@@ -1,8 +1,6 @@
-﻿using System;
-using Managers;
+﻿using Managers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using IANTLibrary;
 
 public class StartGameController : MonoBehaviour, IResponseHandler
 {
@@ -38,6 +36,7 @@ public class StartGameController : MonoBehaviour, IResponseHandler
         IANTGame.Player.UseCake(usedCakeNumber);
         IANTGame.UsedCakeNumber = usedCakeNumber;
         IANTGame.Game = new ClientGame();
+        IANTGame.GameType = "training";
         SceneManager.LoadScene("Game");
     }
 }

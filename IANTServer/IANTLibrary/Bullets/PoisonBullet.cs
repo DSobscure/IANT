@@ -14,8 +14,8 @@ namespace IANTLibrary.Bullets
         public PoisonBullet(BulletProperties properties, Tower tower, int elementLevel) : base(properties, tower)
         {
             ElementLevel = elementLevel;
-            Poison = elementLevel;
-            EffectDuration = elementLevel * 2;
+            Poison = elementLevel * 1f;
+            EffectDuration = elementLevel * 1;
         }
 
         public override void Hit(Ant ant)

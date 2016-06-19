@@ -22,7 +22,9 @@ public class ClientAnt : Ant
     }
     public override void Move()
     {
-        UpdatePosition(antInstance.transform.position.x, antInstance.transform.position.y);
+        Rigidbody2D r2d = antInstance.GetComponent<Rigidbody2D>();
+        UpdateTransform(r2d.position.x, r2d.position.y, r2d.rotation);
+        //UpdatePosition(antInstance.transform.position.x, antInstance.transform.position.y);
         base.Move();
         antController.SetVelocity();
     }
